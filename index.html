@@ -327,13 +327,15 @@
         /* Progress Bar Indicators */
         .progress-container {
             display: flex;
-            gap: 8px;
+            gap: 5px;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
 
         .progress-dot {
             flex-grow: 1;
             height: 6px;
+            min-width: 15px;
             background-color: #dcd1bb;
             border-radius: 3px;
             transition: all 0.3s ease;
@@ -629,7 +631,7 @@
                         <span>Sound Chimes</span>
                     </div>
                 </div>
-                <p class="map-instructions">Read the scriptural clue on the right, then locate and click the correct city dot on the map.</p>
+                <p class="map-instructions">Read the scripture clue on the right, then locate and click the correct city dot on the map.</p>
                 
                 <div class="map-wrapper" id="map-wrapper">
                     <!-- Custom Map Image -->
@@ -649,18 +651,15 @@
                     <div>
                         <div class="status-board">
                             <span class="status-title">Current Journey Stop</span>
-                            <span class="status-value" id="current-question-num">1 of 4</span>
+                            <span class="status-value" id="current-question-num">1 of 11</span>
                         </div>
                         <div class="status-board" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
                             <span class="status-title">Total Score</span>
-                            <span class="status-value" id="score-display">0 / 4</span>
+                            <span class="status-value" id="score-display">0 / 11</span>
                         </div>
                         <!-- Progress Dots -->
                         <div class="progress-container" id="progress-container">
-                            <div class="progress-dot active" id="pdot-0"></div>
-                            <div class="progress-dot" id="pdot-1"></div>
-                            <div class="progress-dot" id="pdot-2"></div>
-                            <div class="progress-dot" id="pdot-3"></div>
+                            <!-- Generated dynamically in JS -->
                         </div>
                     </div>
 
@@ -815,7 +814,8 @@
             PAPHOS: { x: 973, y: 506, name: 'Paphos' },
             TYRE: { x: 1099, y: 624, name: 'Tyre' },
             CAESAREA: { x: 1106, y: 591, name: 'Caesarea' },
-            JERUSALEM: { x: 1112, y: 667, name: 'Jerusalem' }
+            JERUSALEM: { x: 1112, y: 667, name: 'Jerusalem' },
+            MALTA: { x: 81, y: 439, name: 'Malta' }
         };
 
         const QUESTIONS = [
@@ -846,6 +846,55 @@
                 citation: "Acts 17:10, 11",
                 targetCityKey: "BEROEA",
                 factText: "Beroea! The Beroeans set a beautiful pattern for us today by verifying everything they learned directly against God's Word to confirm it was true."
+            },
+            {
+                id: 5,
+                clue: "After setting sail from Seleucia, Paul and Barnabas arrived on the island of Cyprus. In which city did they first begin 'proclaiming the word of God in the synagogues of the Jews'?",
+                citation: "Acts 13:4, 5",
+                targetCityKey: "SALAMIS",
+                factText: "Salamis! This was the entry point of the very first missionary tour. The travel group included John Mark, who assisted them as they walked across the island."
+            },
+            {
+                id: 6,
+                clue: "In what Galatian city did Paul heal a man lame from birth, causing the local crowds to mistakenly shout out in their language: 'The gods have become like humans and have come down to us!'?",
+                citation: "Acts 14:8-11",
+                targetCityKey: "LYSTRA",
+                factText: "Lystra! The crowds tried to offer sacrifices to Paul and Barnabas, calling them Hermes and Zeus. Paul had to forcefully restrain them, directing their worship to the living God."
+            },
+            {
+                id: 7,
+                clue: "After Paul and Silas were severely beaten with rods and thrown into prison in this Roman colony, what city's jailer and his entire household were baptized after a midnight earthquake?",
+                citation: "Acts 16:12, 22-33",
+                targetCityKey: "PHILIPPI",
+                factText: "Philippi! Despite their suffering, Paul and Silas were singing praises to God in prison. This faithful endurance led to the salvation of the jailer and his family, establishing a beautiful, loving congregation."
+            },
+            {
+                id: 8,
+                clue: "While waiting for Silas and Timothy to arrive, Paul's spirit became irritated at the sight of a city full of idols. In which prominent center of Greek philosophy did he give his famous speech on Mars' Hill regarding an 'Unknown God'?",
+                citation: "Acts 17:15-23",
+                targetCityKey: "ATHENS",
+                factText: "Athens! Paul masterfully used the city's own religious altars to teach them about the Grand Creator, showing that Jehovah 'does not dwell in handmade temples.'"
+            },
+            {
+                id: 9,
+                clue: "In which major commercial seaport did Paul spend a year and six months strengthening the new congregation, while working alongside Aquila and Priscilla in the trade of tentmaking?",
+                citation: "Acts 18:1-3, 11",
+                targetCityKey: "CORINTH",
+                factText: "Corinth! Jehovah comforted Paul in a vision here, telling him: 'Do not be afraid... I have many people in this city.' Paul wrote his first inspired letters (1 and 2 Thessalonians) from this location."
+            },
+            {
+                id: 10,
+                clue: "Because of Paul's effective preaching in this city, a silversmith named Demetrius started a massive riot in the ancient theater, shouting for two hours: 'Great is Artemis of the Ephesians!'",
+                citation: "Acts 19:24-34",
+                targetCityKey: "EPHESUS",
+                factText: "Ephesus! The growth of true worship completely disrupted the local demonic magic and idol trade, prompting public bonfires where former practitioners burned their magic books."
+            },
+            {
+                id: 11,
+                clue: "On his journey to Rome as a prisoner, Paul was transferred to an Alexandrian ship that eventually ran aground and was smashed by violent waves. On which small island was the entire crew of 276 people safely cast ashore?",
+                citation: "Acts 27:37-44; 28:1",
+                targetCityKey: "MALTA",
+                factText: "Malta! True to Jehovah's promise via an angel, not a single life was lost in the shipwreck. The islanders showed 'unusual human kindness' to Paul and the survivors."
             }
         ];
 
@@ -917,21 +966,31 @@
             factBox.style.display = 'none';
             btnHint.style.display = 'block';
             
-            // Update progress indicators
-            for (let i = 0; i < QUESTIONS.length; i++) {
-                const dot = document.getElementById(`pdot-${i}`);
-                if (dot) {
-                    dot.className = 'progress-dot';
-                    if (i < index) dot.classList.add('completed');
-                    if (i === index) dot.classList.add('active');
-                }
-            }
+            // Render progress indicators dynamically
+            renderProgressDots();
             
             currentQuestionNum.textContent = `${index + 1} of ${QUESTIONS.length}`;
             updateScoreBoard();
             
             // Redraw markers to clear transient ones but keep discovered ones
             redrawMarkers();
+        }
+
+        // Render progress indicators dynamically
+        function renderProgressDots() {
+            const container = document.getElementById('progress-container');
+            container.innerHTML = '';
+            for (let i = 0; i < QUESTIONS.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                dot.id = `pdot-${i}`;
+                if (i < currentQuestionIndex) {
+                    dot.classList.add('completed');
+                } else if (i === currentQuestionIndex) {
+                    dot.classList.add('active');
+                }
+                container.appendChild(dot);
+            }
         }
 
         // Update score board text
