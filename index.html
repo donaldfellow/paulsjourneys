@@ -626,9 +626,15 @@
             <div class="map-panel parchment-card">
                 <div class="map-header">
                     <span>Interactive Missionary Map</span>
-                    <div id="audio-toggle" class="audio-control" title="Toggle sound effects">
-                        <span id="audio-icon" class="audio-icon">🔊</span>
-                        <span>Sound Chimes</span>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <div id="mode-toggle" class="audio-control" title="Toggle between chronological and randomized stop order">
+                            <span id="mode-icon">📜</span>
+                            <span id="mode-text">Chronological</span>
+                        </div>
+                        <div id="audio-toggle" class="audio-control" title="Toggle sound effects">
+                            <span id="audio-icon" class="audio-icon">🔊</span>
+                            <span>Sound Chimes</span>
+                        </div>
                     </div>
                 </div>
                 <p class="map-instructions">Read the scripture clue on the right, then locate and click the correct city dot on the map.</p>
@@ -904,6 +910,8 @@
         let triesCount = 0;
         let questionAnswered = false;
         let discoveredCities = []; // Array of keys of correctly answered cities
+        let randomModeActive = false; // Toggle for randomizing question order
+        let activeQuestions = [...QUESTIONS];
 
         // Original image design dimensions
         const ORIGINAL_WIDTH = 1408;
@@ -927,12 +935,23 @@
         const btnNext = document.getElementById('btn-next');
         const btnHint = document.getElementById('btn-hint');
         const btnRestart = document.getElementById('btn-restart');
+        const modeToggle = document.getElementById('mode-toggle');
+        const modeIcon = document.getElementById('mode-icon');
+        const modeText = document.getElementById('mode-text');
         
         const gameActiveCard = document.getElementById('game-active-card');
         const gameCompleteCard = document.getElementById('game-complete-card');
         const completionSummary = document.getElementById('completion-summary');
 
         // --- 5. Game Functions ---
+
+        // Fisher-Yates Shuffle Algorithm
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
 
         // Initialize Game State
         function initGame() {
@@ -941,6 +960,12 @@
             triesCount = 0;
             questionAnswered = false;
             discoveredCities = [];
+            
+            // Prepare active questions based on selected mode
+            activeQuestions = [...QUESTIONS];
+            if (randomModeActive) {
+                shuffleArray(activeQuestions);
+            }
             
             // Clear markers
             markerOverlay.innerHTML = '';
@@ -955,7 +980,7 @@
         // Load a specific question
         function loadQuestion(index) {
             questionAnswered = false;
-            const q = QUESTIONS[index];
+            const q = activeQuestions[index];
             
             // Reset Sidebar UI
             clueText.textContent = `"${q.clue}"`;
@@ -969,7 +994,7 @@
             // Render progress indicators dynamically
             renderProgressDots();
             
-            currentQuestionNum.textContent = `${index + 1} of ${QUESTIONS.length}`;
+            currentQuestionNum.textContent = `${index + 1} of ${activeQuestions.length}`;
             updateScoreBoard();
             
             // Redraw markers to clear transient ones but keep discovered ones
@@ -980,7 +1005,7 @@
         function renderProgressDots() {
             const container = document.getElementById('progress-container');
             container.innerHTML = '';
-            for (let i = 0; i < QUESTIONS.length; i++) {
+            for (let i = 0; i < activeQuestions.length; i++) {
                 const dot = document.createElement('div');
                 dot.className = 'progress-dot';
                 dot.id = `pdot-${i}`;
@@ -995,7 +1020,7 @@
 
         // Update score board text
         function updateScoreBoard() {
-            scoreDisplay.textContent = `${score} / ${QUESTIONS.length}`;
+            scoreDisplay.textContent = `${score} / ${activeQuestions.length}`;
         }
 
         // Draw permanent markers for correct cities and remove transient ones
@@ -1085,7 +1110,7 @@
             
             // Find closest city next to the clicked coordinate
             const clickedCityKey = findNearestCity(originalClickX, originalClickY);
-            const currentQ = QUESTIONS[currentQuestionIndex];
+            const currentQ = activeQuestions[currentQuestionIndex];
             const targetCity = CITIES[currentQ.targetCityKey];
 
             if (clickedCityKey === currentQ.targetCityKey) {
@@ -1149,7 +1174,7 @@
             const existingHints = document.querySelectorAll('.city-marker.target-hint');
             existingHints.forEach(h => h.remove());
             
-            const q = QUESTIONS[currentQuestionIndex];
+            const q = activeQuestions[currentQuestionIndex];
             const targetCity = CITIES[q.targetCityKey];
             
             if (targetCity) {
@@ -1174,7 +1199,7 @@
         function proceedToNextQuestion() {
             currentQuestionIndex++;
             
-            if (currentQuestionIndex < QUESTIONS.length) {
+            if (currentQuestionIndex < activeQuestions.length) {
                 loadQuestion(currentQuestionIndex);
             } else {
                 // End of game
@@ -1187,7 +1212,7 @@
             gameActiveCard.style.display = 'none';
             gameCompleteCard.style.display = 'flex';
             
-            let summaryMsg = `Praiseworthy examination! You completed the missionary journeys of Paul with a perfect score of ${score} / ${QUESTIONS.length}. `;
+            let summaryMsg = `Praiseworthy examination! You completed the missionary journeys of Paul with a perfect score of ${score} / ${activeQuestions.length}. `;
             if (triesCount === 0) {
                 summaryMsg += "Splendid! You correctly pinpointed every single city on your very first attempt. Like the noble-minded Beroeans, your knowledge of the Scriptures is admirable!";
             } else {
@@ -1196,6 +1221,26 @@
             
             completionSummary.textContent = summaryMsg;
         }
+
+        // Toggle random/chronological modes
+        modeToggle.addEventListener('click', () => {
+            getAudioContext();
+            randomModeActive = !randomModeActive;
+            
+            // Update mode UI
+            if (randomModeActive) {
+                modeIcon.textContent = '🔀';
+                modeText.textContent = 'Randomized';
+                modeToggle.title = 'Switch to chronological stop order';
+            } else {
+                modeIcon.textContent = '📜';
+                modeText.textContent = 'Chronological';
+                modeToggle.title = 'Switch to randomized stop order';
+            }
+            
+            // Restart game with new mode
+            initGame();
+        });
 
         // --- 6. Event Listeners ---
         mapWrapper.addEventListener('click', handleMapClick);
