@@ -733,6 +733,30 @@
             return audioCtx;
         }
 
+        // iPad / iOS Web Audio Unlocker (Safari blocks audio until a hardware-level user event fires)
+        function unlockAudioOniOS() {
+            const ctx = getAudioContext();
+            if (ctx) {
+                // Play a brief silent note to force Safari to unlock the audio hardware output stream
+                const buffer = ctx.createBuffer(1, 1, 22050);
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(ctx.destination);
+                source.start(0);
+                
+                // Clean up all events once successfully unlocked
+                const events = ['click', 'touchstart', 'mousedown'];
+                events.forEach(evt => {
+                    document.removeEventListener(evt, unlockAudioOniOS, true);
+                });
+            }
+        }
+        
+        // Bind unlock listeners on first page interaction
+        document.addEventListener('click', unlockAudioOniOS, true);
+        document.addEventListener('touchstart', unlockAudioOniOS, true);
+        document.addEventListener('mousedown', unlockAudioOniOS, true);
+
         // Toggle sound
         const audioToggleBtn = document.getElementById('audio-toggle');
         const audioIcon = document.getElementById('audio-icon');
