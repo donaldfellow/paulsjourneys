@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TN9JTM3EK"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-5TN9JTM3EK');
+    </script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paul's Missionary Journeys - Scriptural Trivia Game</title>
+    
+    <!-- Google Fonts for Elegant Vintage Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Modern Reset and Design System */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Dynamic Vintage Parchment Background with Procedural Noise */
+        body {
+            background-color: #f5eedc;
+            background-image: 
+                radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(214, 193, 154, 0.4) 100%),
+                url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='noiseFilter'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.045'/></svg>");
+            font-family: 'Lora', Georgia, serif;
+            color: #2c1d11;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            padding: 10px;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(214, 193, 154, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8e7249;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6e5533;
+        }
+
+        /* Page Layout Containers */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px;
+            flex-grow: 1;
+        }
+
+        /* Elegant Antique Header */
+        header {
+            text-align: center;
+            padding: 15px 10px;
+            border-bottom: 2px double #8e7249;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        header::after {
+            content: "❖";
+            display: block;
+            color: #8e7249;
+            font-size: 1.2rem;
+            margin-top: 5px;
+        }
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #4a3319;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8), 0 0 1px rgba(0, 0, 0, 0.1);
+        }
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #8e7249;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Main Workspace Grid (Desktop Side-by-Side) */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        @media (max-width: 1100px) {
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Parchment Cards Design System */
+        .parchment-card {
+            background-color: #faf5eb;
+            border: 2px solid #dcd1bb;
+            outline: 1px solid #b8a27d;
+            outline-offset: -6px;
+            border-radius: 6px;
+            box-shadow: 
+                0 10px 25px rgba(44, 29, 17, 0.12), 
+                inset 0 0 40px rgba(184, 162, 125, 0.2);
+            padding: 24px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Decorative Corners */
+        .parchment-card::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px solid rgba(184, 162, 125, 0.35);
+            pointer-events: none;
+            border-radius: 4px;
+        }
+
+        /* Map Panel (Left side) */
+        .map-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #4a3319;
+            border-bottom: 1px solid rgba(142, 114, 73, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .map-instructions {
+            font-size: 0.9rem;
+            color: #6d553b;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        /* Map Wrapper & Interactive Canvas layers */
+        .map-wrapper {
+            position: relative;
+            width: 100%;
+            border: 3px double #8e7249;
+            border-radius: 4px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background-color: #eae1cd;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        .map-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Layer for markers and indicators overlay */
+        .marker-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Clicks register on image */
+        }
+
+        /* Glowing City Hotspot Markers */
+        .city-marker {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .city-marker.correct-glow {
+            border: 3px solid #2e7d32;
+            background-color: rgba(76, 175, 80, 0.35);
+            box-shadow: 0 0 15px #4caf50;
+            animation: pulse-correct-marker 2s infinite;
+        }
+
+        .city-marker.correct-glow::after {
+            content: "✓";
+            color: #1b5e20;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 1px 1px 0 #fff;
+        }
+
+        /* Pulse indicator for the current target city (hint) */
+        .city-marker.target-hint {
+            border: 2px dashed #b8860b;
+            background-color: rgba(218, 165, 32, 0.15);
+            animation: pulse-hint-marker 1.5s infinite;
+        }
+
+        /* Dynamic click effect circle */
+        .click-pulse {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            transform: translate(-50%, -50%) scale(0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 1;
+            z-index: 20;
+        }
+
+        .click-pulse.success {
+            border: 4px solid #4caf50;
+            background-color: rgba(76, 175, 80, 0.2);
+            animation: explode-pulse 0.8s ease-out forwards;
+        }
+
+        .click-pulse.failure {
+            border: 4px solid #f44336;
+            background-color: rgba(244, 67, 54, 0.2);
+            animation: explode-pulse 0.8s ease-out forwards;
+        }
+
+        /* Keyframes for animations */
+        @keyframes pulse-correct-marker {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.8);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+
+        @keyframes pulse-hint-marker {
+            0% {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes explode-pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(0.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.4);
+                opacity: 0;
+            }
+        }
+
+        /* Sidebar Panel (Right side) */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Status and Score Board */
+        .status-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(142, 114, 73, 0.25);
+            padding-bottom: 12px;
+            margin-bottom: 10px;
+        }
+
+        .status-title {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #8e7249;
+            letter-spacing: 1px;
+        }
+
+        .status-value {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #4a3319;
+        }
+
+        /* Progress Bar Indicators */
+        .progress-container {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .progress-dot {
+            flex-grow: 1;
+            height: 6px;
+            min-width: 15px;
+            background-color: #dcd1bb;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background-color: #b8a27d;
+            box-shadow: 0 0 5px rgba(184, 162, 125, 0.5);
+        }
+
+        .progress-dot.completed {
+            background-color: #2e7d32;
+        }
+
+        /* Clue Box Styling */
+        .clue-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #faf5eb;
+            border-left: 4px solid #8e7249;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .clue-header {
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #8e7249;
+            text-transform: uppercase;
+        }
+
+        .clue-text {
+            font-size: 1.15rem;
+            line-height: 1.6;
+            color: #2c1d11;
+            font-style: italic;
+        }
+
+        .clue-citation {
+            align-self: flex-end;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #8e7249;
+        }
+
+        /* Message / Feedback Box */
+        .feedback-box {
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 1rem;
+            line-height: 1.5;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .feedback-box.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback-box.correct {
+            background-color: #e8f5e9;
+            border: 1px solid #a5d6a7;
+            color: #1b5e20;
+        }
+
+        .feedback-box.incorrect {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            color: #b71c1c;
+        }
+
+        /* Fact Box Scroll Styling */
+        .fact-box {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            background-color: #fff9e6;
+            border: 1px dashed #b8a27d;
+            border-radius: 4px;
+            padding: 18px;
+            animation: roll-open 0.5s ease-out forwards;
+            box-shadow: inset 0 0 15px rgba(184, 162, 125, 0.15);
+        }
+
+        @keyframes roll-open {
+            0% {
+                opacity: 0;
+                transform: scaleY(0.7);
+                transform-origin: top;
+            }
+            100% {
+                opacity: 1;
+                transform: scaleY(1);
+                transform-origin: top;
+            }
+        }
+
+        .fact-header {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #8e7249;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(142, 114, 73, 0.2);
+            padding-bottom: 6px;
+        }
+
+        .fact-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #3e2714;
+        }
+
+        /* Buttons Styling */
+        .btn {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #faf5eb;
+            background-color: #8e7249;
+            border: 1px solid #785f3a;
+            border-radius: 4px;
+            padding: 12px 24px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background-color: #725a37;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-hint {
+            background-color: transparent;
+            color: #8e7249;
+            border: 1px solid #8e7249;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            padding: 8px 16px;
+            box-shadow: none;
+        }
+
+        .btn-hint:hover {
+            background-color: rgba(142, 114, 73, 0.1);
+            color: #6e5533;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Complete/End Game Screen */
+        .game-complete-card {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            text-align: center;
+            padding: 35px 25px;
+            animation: roll-open 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .complete-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2e7d32;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .complete-divider {
+            color: #8e7249;
+            font-size: 1.5rem;
+            margin: 5px 0;
+        }
+
+        .complete-text {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #2c1d11;
+        }
+
+        /* Screen Flash overlays */
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.1s ease-out;
+        }
+
+        .flash-overlay.correct-flash {
+            background-color: rgba(76, 175, 80, 0.12);
+            animation: flash-pulse 0.4s ease-out;
+        }
+
+        .flash-overlay.incorrect-flash {
+            background-color: rgba(244, 67, 54, 0.12);
+            animation: flash-pulse 0.4s ease-out;
+        }
+
+        @keyframes flash-pulse {
+            0% { opacity: 0; }
+            25% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* Footer styling */
+        footer {
+            text-align: center;
+            padding: 20px 10px 5px 10px;
+            font-size: 0.8rem;
+            color: #8e7249;
+            font-weight: 500;
+            border-top: 1px dashed rgba(142, 114, 73, 0.25);
+            margin-top: 20px;
+        }
+
+        /* Audio Control Widget */
+        .audio-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #6d553b;
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(214, 193, 154, 0.15);
+            border: 1px solid rgba(142, 114, 73, 0.25);
+            transition: background 0.2s;
+        }
+        .audio-control:hover {
+            background: rgba(214, 193, 154, 0.3);
+        }
+        .audio-icon {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Screen Flash Overlay -->
+    <div id="flash-overlay" class="flash-overlay"></div>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <h1>Journeys of the Apostle Paul</h1>
+            <div class="subtitle">Educational Scriptural Map Game</div>
+        </header>
+
+        <!-- Main Game Layout Grid -->
+        <div class="game-layout">
+            
+            <!-- Left Side: Map Container -->
+            <div class="map-panel parchment-card">
+                <div class="map-header">
+                    <span>Interactive Missionary Map</span>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <div id="mode-toggle" class="audio-control" title="Toggle between chronological and randomized stop order">
+                            <span id="mode-icon">📜</span>
+                            <span id="mode-text">Chronological</span>
+                        </div>
+                        <div id="audio-toggle" class="audio-control" title="Toggle sound effects">
+                            <span id="audio-icon" class="audio-icon">🔊</span>
+                            <span>Sound Chimes</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="map-instructions">Read the scripture clue on the right, then locate and click the correct city dot on the map.</p>
+                
+                <div class="map-wrapper" id="map-wrapper">
+                    <!-- Custom Map Image -->
+                    <img src="image.png" id="map-image" alt="Missionary Journeys of Apostle Paul Map">
+                    
+                    <!-- Overlay layer for interactive coordinates & feedback markers -->
+                    <div class="marker-overlay" id="marker-overlay"></div>
+                </div>
+            </div>
+
+            <!-- Right Side: Game Logic Control Panel -->
+            <div class="sidebar">
+                
+                <!-- Active Game Screen Panel -->
+                <div id="game-active-card" class="parchment-card" style="display: flex; flex-direction: column; gap: 20px;">
+                    <!-- Status Header -->
+                    <div>
+                        <div class="status-board">
+                            <span class="status-title">Current Journey Stop</span>
+                            <span class="status-value" id="current-question-num">1 of 17</span>
+                        </div>
+                        <div class="status-board" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                            <span class="status-title">Total Score</span>
+                            <span class="status-value" id="score-display">0 / 17</span>
+                        </div>
+                        <!-- Progress Dots -->
+                        <div class="progress-container" id="progress-container">
+                            <!-- Generated dynamically in JS -->
+                        </div>
+                    </div>
+
+                    <!-- Clue Scroll Container -->
+                    <div class="clue-box" id="clue-box">
+                        <div class="clue-header">Scripture Clue</div>
+                        <div class="clue-text" id="clue-text">Loading clue...</div>
+                        <div class="clue-citation" id="clue-citation">Acts</div>
+                    </div>
+
+                    <!-- Answer Feedback Box (Shows correct/incorrect notifications) -->
+                    <div class="feedback-box" id="feedback-box"></div>
+
+                    <!-- Scriptural Fact Box (Revealed upon correct answer) -->
+                    <div class="fact-box" id="fact-box">
+                        <div class="fact-header">Scriptural Significance ❖</div>
+                        <div class="fact-text" id="fact-text">Loading facts...</div>
+                        <button class="btn" id="btn-next">
+                            <span>Proceed to Next Stop</span> ➜
+                        </button>
+                    </div>
+
+                    <!-- Interactive Hint Button -->
+                    <button class="btn btn-hint" id="btn-hint">Need a Scriptural Hint?</button>
+                </div>
+
+                <!-- Game Completion Screen Panel -->
+                <div id="game-complete-card" class="parchment-card game-complete-card">
+                    <div class="complete-title">Journey Complete!</div>
+                    <div class="complete-divider">❖   ❖   ❖</div>
+                    <p class="complete-text" id="completion-summary">
+                        Praiseworthy examination! You completed the missionary journeys and verified all locations.
+                    </p>
+                    <div class="complete-divider" style="font-size: 1rem;">Acts 17:11</div>
+                    <p class="complete-text" style="font-style: italic; color: #6d553b; font-size: 0.95rem; margin-top: -10px;">
+                        "Now these were more noble-minded than those in Thessalonica, for they accepted the word with the greatest eagerness of mind, carefully examining the Scriptures daily..."
+                    </p>
+                    <button class="btn" id="btn-restart" style="margin-top: 15px;">
+                        <span>Restart Missionary Tour</span> ↺
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>Made for Educational Bible Study. Scripture citations & clue accounts based on historical records in the book of Acts.</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- 1. Sound Engine (Web Audio API Synthesizer) ---
+        let soundEnabled = true;
+        
+        // Handle audio context safety rules (resume context on user interaction)
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // iPad / iOS Web Audio Unlocker (Safari blocks audio until a hardware-level user event fires)
+        function unlockAudioOniOS() {
+            const ctx = getAudioContext();
+            if (ctx) {
+                // Play a brief silent note to force Safari to unlock the audio hardware output stream
+                const buffer = ctx.createBuffer(1, 1, 22050);
+                const source = ctx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(ctx.destination);
+                source.start(0);
+                
+                // Clean up all events once successfully unlocked
+                const events = ['click', 'touchstart', 'mousedown'];
+                events.forEach(evt => {
+                    document.removeEventListener(evt, unlockAudioOniOS, true);
+                });
+            }
+        }
+        
+        // Bind unlock listeners on first page interaction
+        document.addEventListener('click', unlockAudioOniOS, true);
+        document.addEventListener('touchstart', unlockAudioOniOS, true);
+        document.addEventListener('mousedown', unlockAudioOniOS, true);
+
+        // Toggle sound
+        const audioToggleBtn = document.getElementById('audio-toggle');
+        const audioIcon = document.getElementById('audio-icon');
+        audioToggleBtn.addEventListener('click', () => {
+            soundEnabled = !soundEnabled;
+            audioIcon.textContent = soundEnabled ? '🔊' : '🔇';
+            audioToggleBtn.title = soundEnabled ? 'Mute sound effects' : 'Unmute sound effects';
+        });
+
+        // Synthesize Success chime (ascending major chord arpeggio)
+        function playSuccessChime() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const startTime = ctx.currentTime;
+                // E-major arpeggio: E5, G#5, B5, E6
+                const notes = [659.25, 830.61, 987.77, 1318.51];
+                
+                notes.forEach((freq, index) => {
+                    const osc = ctx.createOscillator();
+                    const gainNode = ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, startTime + index * 0.08);
+                    
+                    gainNode.gain.setValueAtTime(0, startTime + index * 0.08);
+                    gainNode.gain.linearRampToValueAtTime(0.12, startTime + index * 0.08 + 0.02);
+                    gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + index * 0.08 + 0.35);
+                    
+                    osc.connect(gainNode);
+                    gainNode.connect(ctx.destination);
+                    
+                    osc.start(startTime + index * 0.08);
+                    osc.stop(startTime + index * 0.08 + 0.4);
+                });
+            } catch (e) {
+                console.error("Audio error:", e);
+            }
+        }
+
+        // Synthesize Error slide (downward sliding wave)
+        function playErrorChime() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const startTime = ctx.currentTime;
+                
+                const osc = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(261.63, startTime); // C4
+                osc.frequency.linearRampToValueAtTime(130.81, startTime + 0.3); // C3 slide down
+                
+                gainNode.gain.setValueAtTime(0.18, startTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.3);
+                
+                osc.connect(gainNode);
+                gainNode.connect(ctx.destination);
+                
+                osc.start(startTime);
+                osc.stop(startTime + 0.35);
+            } catch (e) {
+                console.error("Audio error:", e);
+            }
+        }
+
+        // --- 2. Scriptural Trivia Database & Coordinate Maps ---
+        // Coordinates map to the exact centers of white circles on image.png (1408x768 scale)
+        const CITIES = {
+            EPHESUS: { x: 713, y: 319, name: 'Ephesus' },
+            TROAS: { x: 664, y: 207, name: 'Troas' },
+            LYSTRA: { x: 926, y: 322, name: 'Lystra' },
+            BEROEA: { x: 496, y: 152, name: 'Beroea' },
+            THESSALONICA: { x: 428, y: 163, name: 'Thessalonica' },
+            PHILIPPI: { x: 578, y: 128, name: 'Philippi' },
+            CORINTH: { x: 500, y: 328, name: 'Corinth' },
+            ATHENS: { x: 533, y: 315, name: 'Athens' },
+            ANTIOCH_PISIDIAN: { x: 888, y: 304, name: 'Antioch (Pisidian)' },
+            ICONIUM: { x: 967, y: 319, name: 'Iconium' },
+            DERBE: { x: 982, y: 348, name: 'Derbe' },
+            PERGA: { x: 879, y: 381, name: 'Perga' },
+            ANTIOCH_SYRIAN: { x: 1152, y: 417, name: 'Antioch (Syrian)' },
+            SALAMIS: { x: 1039, y: 478, name: 'Salamis' },
+            PAPHOS: { x: 973, y: 506, name: 'Paphos' },
+            TYRE: { x: 1106, y: 591, name: 'Tyre' },
+            CAESAREA: { x: 1099, y: 625, name: 'Caesarea' },
+            JERUSALEM: { x: 1112, y: 667, name: 'Jerusalem' },
+            MALTA: { x: 81, y: 439, name: 'Malta' },
+            DAMASCUS: { x: 1170, y: 575, name: 'Damascus' },
+            JOPPA: { x: 1095, y: 650, name: 'Joppa' },
+            ROME: { x: 62, y: 142, name: 'Rome' },
+            CYPRUS: { x: 1010, y: 482, name: 'Cyprus (Island)' }
+        };
+
+        const QUESTIONS = [
+            {
+                id: 1,
+                clue: "In which city were the disciples gathered on the day of Pentecost when they received holy spirit, and where Peter and John later healed a lame man at a temple gate?",
+                citation: "Acts 2:1-4; 3:1-8",
+                targetCityKey: "JERUSALEM",
+                factText: "Jerusalem! (Lesson 94 & 95) The disciples received holy spirit here at Pentecost 33 C.E. Later, at the temple gate called Beautiful, Peter and John healed a man lame from birth, showing the power of Jesus' name."
+            },
+            {
+                id: 2,
+                clue: "Following his dramatic road conversion, in which city did Saul preach boldly about Jesus for three years before escaping a plot in a basket lowered through a wall?",
+                citation: "Acts 9:3-8, 19-25",
+                targetCityKey: "DAMASCUS",
+                factText: "Damascus! (Lesson 96) Saul was traveling here to persecute Christians, but after seeing a vision of Jesus, he spent three years preaching the good news instead, escaping his opposers in a basket."
+            },
+            {
+                id: 3,
+                clue: "In which coastal city was Peter staying at Simon the tanner's house when he received a vision of a sheet containing clean and unclean animals, preparing him to preach to Gentiles?",
+                citation: "Acts 10:9-16, 43-48",
+                targetCityKey: "JOPPA",
+                factText: "Joppa! (Lesson 97) Peter received a vision here showing that God is not partial and that the good news should now be shared with people of all nations."
+            },
+            {
+                id: 4,
+                clue: "In which city did the Roman army officer Cornelius live, and where was Paul later kept in prison for two years before appealing to Caesar?",
+                citation: "Acts 10:1-5; 23:33-35; 24:27",
+                targetCityKey: "CAESAREA",
+                factText: "Caesarea! (Lesson 97 & 101) Cornelius was the first uncircumcised Gentile convert. Later, Paul spent two years in prison here before appealing to stand trial before Caesar in Rome."
+            },
+            {
+                id: 5,
+                clue: "From which city were Paul and Barnabas sent out on their first missionary journey, and where were Jesus' disciples first called 'Christians'?",
+                citation: "Acts 11:26; 13:1-3",
+                targetCityKey: "ANTIOCH_SYRIAN",
+                factText: "Antioch (Syrian)! (Lesson 98) The congregation here was the starting point for Paul's missionary tours. It was also where believers were first called 'Christians' by divine providence."
+            },
+            {
+                id: 6,
+                clue: "On which island did Paul and Barnabas preach to the governor Sergius Paulus, while opposing the sorcerer Elymas who tried to turn the governor away from the faith?",
+                citation: "Acts 13:4-12",
+                targetCityKey: "CYPRUS",
+                factText: "Cyprus! (Lesson 98) They traveled across the proconsul's home island. The proconsul was amazed at the teaching of Jehovah and became a believer."
+            },
+            {
+                id: 7,
+                clue: "In which city of Asia Minor did Paul and Barnabas speak so effectively that a great multitude believed, although they later had to flee an attempt to stone them?",
+                citation: "Acts 14:1-6",
+                targetCityKey: "ICONIUM",
+                factText: "Iconium! (Lesson 98) They spent a long time here speaking boldly. When they learned of a plot to mistreat and stone them, they fled to the cities of Lycaonia."
+            },
+            {
+                id: 8,
+                clue: "In which city did Paul heal a man lame from birth, causing the crowd to call them gods, and where he later met the faithful young disciple Timothy?",
+                citation: "Acts 14:8-15; 16:1-3",
+                targetCityKey: "LYSTRA",
+                factText: "Lystra! (Lesson 98 & 100) The local people tried to offer sacrifices to Paul and Barnabas, calling them Hermes and Zeus. Later, Paul returned and chose young Timothy to join him in the traveling ministry."
+            },
+            {
+                id: 9,
+                clue: "After surviving a stoning and being left for dead in Lystra, to which city did Paul and Barnabas travel next to make 'quite a few disciples'?",
+                citation: "Acts 14:19-21",
+                targetCityKey: "DERBE",
+                factText: "Derbe! (Lesson 98) Despite the brutal persecution they faced in Lystra, the missionaries courageously went to Derbe and successfully made many new disciples."
+            },
+            {
+                id: 10,
+                clue: "In which Macedonian city did Paul and Silas expel a demon from a slave girl, get beaten and imprisoned, and later baptize the jailer and his household?",
+                citation: "Acts 16:12, 16-33",
+                targetCityKey: "PHILIPPI",
+                factText: "Philippi! (Lesson 98 & 99) A midnight earthquake shook the prison, opening the doors. Paul and Silas stayed to teach and baptize the terrified jailer and his family."
+            },
+            {
+                id: 11,
+                clue: "In which city did Paul reason in the synagogue for three Sabbaths, forming a congregation before envious Jews attacked Jason's house and accused the brothers of turning the earth upside down?",
+                citation: "Acts 17:1-9",
+                targetCityKey: "THESSALONICA",
+                factText: "Thessalonica! (Lesson 98 & 100) A large congregation of believers was formed here. The brothers sent Paul and Silas away by night to protect them from the angry mob."
+            },
+            {
+                id: 12,
+                clue: "The listeners in which Macedonian city were praised as 'more noble-minded' because they accepted the word with eagerness and carefully examined the Scriptures daily?",
+                citation: "Acts 17:10-12",
+                targetCityKey: "BEROEA",
+                factText: "Beroea! (Lesson 100) The Beroeans set a beautiful pattern of diligence by double-checking everything they learned against the Scriptures to confirm it was true."
+            },
+            {
+                id: 13,
+                clue: "While waiting for his companions in this city of philosophers and idols, Paul gave his famous speech on Mars' Hill about the 'Unknown God'. What city was it?",
+                citation: "Acts 17:16-23",
+                targetCityKey: "ATHENS",
+                factText: "Athens! (Lesson 98 & 100) Paul saw that the city was full of idols. He masterfully used the altar dedicated 'To an Unknown God' to teach them about the Grand Creator."
+            },
+            {
+                id: 14,
+                clue: "In which major city did Paul teach for three years, leading many to burn magic books publicly, and prompting Demetrius the silversmith to start a massive theater riot?",
+                citation: "Acts 19:1-10, 19, 23-34",
+                targetCityKey: "EPHESUS",
+                factText: "Ephesus! (Lesson 98) True worship grew so successfully here that it threatened the local idol trade, prompting public book-burnings and a major demonstration in the theater."
+            },
+            {
+                id: 15,
+                clue: "In which major commercial seaport did Paul work alongside Aquila and Priscilla in tentmaking while strengthening the new congregation for a year and six months?",
+                citation: "Acts 18:1-3, 9-11",
+                targetCityKey: "CORINTH",
+                factText: "Corinth! (Lesson 98) Jesus comforted Paul in a vision here, saying: 'Do not be afraid... I have many people in this city.' Paul also wrote his first inspired letters from here."
+            },
+            {
+                id: 16,
+                clue: "Following a violent shipwreck on his journey to Rome, on which island did Paul and all 275 others safely reach the shore as promised by God?",
+                citation: "Acts 27:37-44; 28:1",
+                targetCityKey: "MALTA",
+                factText: "Malta! (Lesson 101) Despite the complete destruction of the ship, not a single life was lost. The islanders showed unusual kindness, and Paul performed many healings."
+            },
+            {
+                id: 17,
+                clue: "As a prisoner who had appealed to Caesar, to which capital city did Paul travel, spending two years under house arrest preaching to all who visited him?",
+                citation: "Acts 25:11, 12; 28:16, 30, 31",
+                targetCityKey: "ROME",
+                factText: "Rome! (Lesson 101) Even while chained to a guard, Paul preached the Kingdom of God with boldness and wrote several inspired letters to strengthen congregations."
+            }
+        ];
+
+        // --- 3. Game State Variables ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let triesCount = 0;
+        let questionAnswered = false;
+        let discoveredCities = []; // Array of keys of correctly answered cities
+        let randomModeActive = false; // Toggle for randomizing question order
+        let activeQuestions = [...QUESTIONS];
+
+        // Original image design dimensions
+        const ORIGINAL_WIDTH = 1408;
+        const ORIGINAL_HEIGHT = 768;
+        const CLICK_THRESHOLD = 26; // Radius in pixels at which a click registers on a city
+
+        // --- 4. DOM Elements ---
+        const mapImage = document.getElementById('map-image');
+        const mapWrapper = document.getElementById('map-wrapper');
+        const markerOverlay = document.getElementById('marker-overlay');
+        const flashOverlay = document.getElementById('flash-overlay');
+
+        const currentQuestionNum = document.getElementById('current-question-num');
+        const scoreDisplay = document.getElementById('score-display');
+        const clueText = document.getElementById('clue-text');
+        const clueCitation = document.getElementById('clue-citation');
+        const feedbackBox = document.getElementById('feedback-box');
+        const factBox = document.getElementById('fact-box');
+        const factText = document.getElementById('fact-text');
+        
+        const btnNext = document.getElementById('btn-next');
+        const btnHint = document.getElementById('btn-hint');
+        const btnRestart = document.getElementById('btn-restart');
+        const modeToggle = document.getElementById('mode-toggle');
+        const modeIcon = document.getElementById('mode-icon');
+        const modeText = document.getElementById('mode-text');
+        
+        const gameActiveCard = document.getElementById('game-active-card');
+        const gameCompleteCard = document.getElementById('game-complete-card');
+        const completionSummary = document.getElementById('completion-summary');
+
+        // --- 5. Game Functions ---
+
+        // Fisher-Yates Shuffle Algorithm
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Initialize Game State
+        function initGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            triesCount = 0;
+            questionAnswered = false;
+            discoveredCities = [];
+            
+            // Prepare active questions based on selected mode
+            activeQuestions = [...QUESTIONS];
+            if (randomModeActive) {
+                shuffleArray(activeQuestions);
+            }
+            
+            // Clear markers
+            markerOverlay.innerHTML = '';
+            
+            gameCompleteCard.style.display = 'none';
+            gameActiveCard.style.display = 'flex';
+            
+            updateScoreBoard();
+            loadQuestion(currentQuestionIndex);
+        }
+
+        // Load a specific question
+        function loadQuestion(index) {
+            questionAnswered = false;
+            const q = activeQuestions[index];
+            
+            // Reset Sidebar UI
+            clueText.textContent = `"${q.clue}"`;
+            clueCitation.textContent = q.citation;
+            
+            feedbackBox.className = 'feedback-box';
+            feedbackBox.textContent = '';
+            factBox.style.display = 'none';
+            btnHint.style.display = 'block';
+            
+            // Render progress indicators dynamically
+            renderProgressDots();
+            
+            currentQuestionNum.textContent = `${index + 1} of ${activeQuestions.length}`;
+            updateScoreBoard();
+            
+            // Redraw markers to clear transient ones but keep discovered ones
+            redrawMarkers();
+        }
+
+        // Render progress indicators dynamically
+        function renderProgressDots() {
+            const container = document.getElementById('progress-container');
+            container.innerHTML = '';
+            for (let i = 0; i < activeQuestions.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                dot.id = `pdot-${i}`;
+                if (i < currentQuestionIndex) {
+                    dot.classList.add('completed');
+                } else if (i === currentQuestionIndex) {
+                    dot.classList.add('active');
+                }
+                container.appendChild(dot);
+            }
+        }
+
+        // Update score board text
+        function updateScoreBoard() {
+            scoreDisplay.textContent = `${score} / ${activeQuestions.length}`;
+        }
+
+        // Draw permanent markers for correct cities and remove transient ones
+        function redrawMarkers() {
+            // Keep only permanent indicators of discovered cities
+            markerOverlay.innerHTML = '';
+            
+            discoveredCities.forEach(cityKey => {
+                const city = CITIES[cityKey];
+                if (city) {
+                    createPermanentMarker(city.x, city.y, city.name);
+                }
+            });
+        }
+
+        // Create a green permanent marker on the map
+        function createPermanentMarker(x, y, label) {
+            const marker = document.createElement('div');
+            marker.className = 'city-marker correct-glow';
+            marker.style.left = `${(x / ORIGINAL_WIDTH) * 100}%`;
+            marker.style.top = `${(y / ORIGINAL_HEIGHT) * 100}%`;
+            marker.title = label;
+            markerOverlay.appendChild(marker);
+        }
+
+        // Show a visual flash overlay on the screen
+        function triggerScreenFlash(isCorrect) {
+            flashOverlay.className = 'flash-overlay';
+            // Force reflow
+            void flashOverlay.offsetWidth;
+            flashOverlay.classList.add(isCorrect ? 'correct-flash' : 'incorrect-flash');
+        }
+
+        // Dynamic click indicator (burst pulse circle) at scaled click coordinates
+        function triggerClickIndicator(x, y, isCorrect) {
+            const pulse = document.createElement('div');
+            pulse.className = `click-pulse ${isCorrect ? 'success' : 'failure'}`;
+            pulse.style.left = `${(x / ORIGINAL_WIDTH) * 100}%`;
+            pulse.style.top = `${(y / ORIGINAL_HEIGHT) * 100}%`;
+            
+            markerOverlay.appendChild(pulse);
+            
+            // Clean up pulse element after animation
+            setTimeout(() => {
+                pulse.remove();
+            }, 800);
+        }
+
+        // Find nearest city from coordinate click
+        function findNearestCity(clickX, clickY) {
+            let nearestCityKey = null;
+            let minDistance = Infinity;
+
+            for (const [key, city] of Object.entries(CITIES)) {
+                const dist = Math.sqrt(Math.pow(clickX - city.x, 2) + Math.pow(clickY - city.y, 2));
+                if (dist < minDistance) {
+                    minDistance = dist;
+                    nearestCityKey = key;
+                }
+            }
+
+            // Return city only if it is within our radius threshold
+            return minDistance <= CLICK_THRESHOLD ? nearestCityKey : null;
+        }
+
+        // Handle Map Click Event
+        function handleMapClick(e) {
+            // Do not process map clicks if question is already answered
+            if (questionAnswered) return;
+            
+            // Trigger audio context activation on first click
+            getAudioContext();
+
+            // Calculate bounding rectangle of map image
+            const rect = mapImage.getBoundingClientRect();
+            
+            // Relative click offset on the image element
+            const relX = e.clientX - rect.left;
+            const relY = e.clientY - rect.top;
+            
+            // Translate to original map scale coords (1408x768)
+            const imgW = mapImage.naturalWidth || ORIGINAL_WIDTH;
+            const imgH = mapImage.naturalHeight || ORIGINAL_HEIGHT;
+            
+            const originalClickX = relX * (imgW / rect.width);
+            const originalClickY = relY * (imgH / rect.height);
+            
+            // Find closest city next to the clicked coordinate
+            const clickedCityKey = findNearestCity(originalClickX, originalClickY);
+            const currentQ = activeQuestions[currentQuestionIndex];
+            const targetCity = CITIES[currentQ.targetCityKey];
+
+            if (clickedCityKey === currentQ.targetCityKey) {
+                // CORRECT ANSWER
+                questionAnswered = true;
+                score++;
+                discoveredCities.push(clickedCityKey);
+                
+                // Audio success chime
+                playSuccessChime();
+                
+                // Screen Green Flash
+                triggerScreenFlash(true);
+                
+                // Click Green Indicator
+                triggerClickIndicator(targetCity.x, targetCity.y, true);
+                
+                // Sidebar UI updates
+                feedbackBox.textContent = `✓ Correct! You found ${targetCity.name}.`;
+                feedbackBox.className = 'feedback-box show correct';
+                
+                // Reveal scriptural facts and "Next Stop" button
+                factText.textContent = currentQ.factText;
+                factBox.style.display = 'flex';
+                btnHint.style.display = 'none';
+                
+                // Redraw map markers
+                redrawMarkers();
+                
+            } else {
+                // INCORRECT ANSWER
+                triesCount++;
+                playErrorChime();
+                triggerScreenFlash(false);
+                
+                let feedbackText = "Take a closer look at the context in your Bible! Try searching the accounts in Acts.";
+                let clickPulseX = originalClickX;
+                let clickPulseY = originalClickY;
+                
+                // If they clicked another city dot, tell them which city they clicked
+                if (clickedCityKey) {
+                    const wrongCity = CITIES[clickedCityKey];
+                    feedbackText = `That is ${wrongCity.name}! Take a closer look at the context in your Bible! Try searching the accounts in Acts.`;
+                    clickPulseX = wrongCity.x;
+                    clickPulseY = wrongCity.y;
+                }
+                
+                // Click Red Indicator
+                triggerClickIndicator(clickPulseX, clickPulseY, false);
+                
+                feedbackBox.textContent = feedbackText;
+                feedbackBox.className = 'feedback-box show incorrect';
+            }
+        }
+
+        // Show hint by blinking a small golden dashed ring around the target city
+        function showHint() {
+            getAudioContext();
+            
+            // Remove any existing hints
+            const existingHints = document.querySelectorAll('.city-marker.target-hint');
+            existingHints.forEach(h => h.remove());
+            
+            const q = activeQuestions[currentQuestionIndex];
+            const targetCity = CITIES[q.targetCityKey];
+            
+            if (targetCity) {
+                const hintMarker = document.createElement('div');
+                hintMarker.className = 'city-marker target-hint';
+                hintMarker.style.left = `${(targetCity.x / ORIGINAL_WIDTH) * 100}%`;
+                hintMarker.style.top = `${(targetCity.y / ORIGINAL_HEIGHT) * 100}%`;
+                
+                markerOverlay.appendChild(hintMarker);
+                
+                // Remove the hint indicator after 4 seconds
+                setTimeout(() => {
+                    hintMarker.remove();
+                }, 4000);
+                
+                feedbackBox.textContent = "A dynamic hint circle is pulsing on the map! Look closely at the region.";
+                feedbackBox.className = 'feedback-box show correct'; // styled neutral-green for encouragement
+            }
+        }
+
+        // Advance to Next Question or Complete
+        function proceedToNextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < activeQuestions.length) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // End of game
+                showGameCompletion();
+            }
+        }
+
+        // Display Game Completion panel
+        function showGameCompletion() {
+            gameActiveCard.style.display = 'none';
+            gameCompleteCard.style.display = 'flex';
+            
+            let summaryMsg = `Praiseworthy examination! You completed the missionary journeys of Paul with a perfect score of ${score} / ${activeQuestions.length}. `;
+            if (triesCount === 0) {
+                summaryMsg += "Splendid! You correctly pinpointed every single city on your very first attempt. Like the noble-minded Beroeans, your knowledge of the Scriptures is admirable!";
+            } else {
+                summaryMsg += `You completed the tour with only ${triesCount} correction(s). Continue carefully examining the Scriptures daily to build up your appreciation for these accounts!`;
+            }
+            
+            completionSummary.textContent = summaryMsg;
+        }
+
+        // Toggle random/chronological modes
+        modeToggle.addEventListener('click', () => {
+            getAudioContext();
+            randomModeActive = !randomModeActive;
+            
+            // Update mode UI
+            if (randomModeActive) {
+                modeIcon.textContent = '🔀';
+                modeText.textContent = 'Randomized';
+                modeToggle.title = 'Switch to chronological stop order';
+            } else {
+                modeIcon.textContent = '📜';
+                modeText.textContent = 'Chronological';
+                modeToggle.title = 'Switch to randomized stop order';
+            }
+            
+            // Restart game with new mode
+            initGame();
+        });
+
+        // --- 6. Event Listeners ---
+        mapWrapper.addEventListener('click', handleMapClick);
+        btnNext.addEventListener('click', proceedToNextQuestion);
+        btnHint.addEventListener('click', showHint);
+        btnRestart.addEventListener('click', initGame);
+
+        // Start game on load
+        window.addEventListener('load', initGame);
+        
+    </script>
+</body>
+</html>
