@@ -871,9 +871,9 @@
             EPHESUS: { x: 740, y: 366, name: 'Ephesus' },
             TROAS: { x: 730, y: 262, name: 'Troas' },
             LYSTRA: { x: 981, y: 378, name: 'Lystra' },
-            BEROEA: { x: 544, y: 196, name: 'Beroea' },
+            BEROEA: { x: 544, y: 206, name: 'Beroea' },
             THESSALONICA: { x: 572, y: 196, name: 'Thessalonica' },
-            PHILIPPI: { x: 626, y: 144, name: 'Philippi' },
+            PHILIPPI: { x: 640, y: 145, name: 'Philippi' },
             CORINTH: { x: 524, y: 332, name: 'Corinth' },
             ATHENS: { x: 572, y: 327, name: 'Athens' },
             ANTIOCH_PISIDIAN: { x: 880, y: 292, name: 'Antioch (Pisidian)' },
@@ -886,8 +886,8 @@
             TYRE: { x: 1161, y: 614, name: 'Tyre' },
             CAESAREA: { x: 1194, y: 642, name: 'Caesarea' },
             JERUSALEM: { x: 1134, y: 667, name: 'Jerusalem' },
-            MALTA: { x: 185, y: 475, name: 'Malta' },
-            ROME: { x: 114, y: 147, name: 'Rome' },
+            MALTA: { x: 217, y: 475, name: 'Malta' },
+            ROME: { x: 114, y: 127, name: 'Rome' },
             DAMASCUS: { x: 1233, y: 592, name: 'Damascus' },
             JOPPA: { x: 1122, y: 649, name: 'Joppa' },
             CYPRUS: { x: 1033, y: 520, name: 'Cyprus (Island)' }
@@ -1218,8 +1218,8 @@
             // Add zoom control in bottom-left to prevent overlay conflicts
             L.control.zoom({ position: 'bottomleft' }).addTo(map);
             
-            // Add custom image overlay
-            L.imageOverlay('image.png', bounds).addTo(map);
+            // Add custom image overlay with cache busting
+            L.imageOverlay('image.png?v=3', bounds).addTo(map);
             
             // Layer group for our permanent city pins
             markerGroup = L.layerGroup().addTo(map);
@@ -1592,7 +1592,7 @@
 
         function selectExploreCity(cityKey) {
             getAudioContext();
-            playSynthesizedChime(true);
+            playSuccessChime();
             
             const data = EXPLORE_DATA[cityKey];
             const city = CITIES[cityKey];
