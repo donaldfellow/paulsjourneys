@@ -20,6 +20,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
     
+    <!-- Leaflet.js Mapping Library Styles & Scripts -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
     <style>
         /* Modern Reset and Design System */
         * {
@@ -32,24 +36,23 @@
         body {
             background-color: #f5eedc;
             background-image: 
-                radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, rgba(214, 193, 154, 0.4) 100%),
-                url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='noiseFilter'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.045'/></svg>");
+                radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(214, 193, 154, 0.45) 100%),
+                url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='noiseFilter'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23noiseFilter)' opacity='0.05'/></svg>");
             font-family: 'Lora', Georgia, serif;
             color: #2c1d11;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             overflow-x: hidden;
-            padding: 10px;
         }
 
         /* Scrollbar styling */
         ::-webkit-scrollbar {
             width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(214, 193, 154, 0.3);
+            background: rgba(214, 193, 154, 0.2);
         }
         ::-webkit-scrollbar-thumb {
             background: #8e7249;
@@ -61,61 +64,71 @@
 
         /* Page Layout Containers */
         .container {
-            max-width: 1440px;
+            max-width: 1600px;
             margin: 0 auto;
             width: 100%;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            padding: 10px;
-            flex-grow: 1;
+            gap: 15px;
+            padding: 15px;
+        }
+
+        @media (max-width: 1100px) {
+            .container {
+                height: auto;
+                overflow-y: auto;
+            }
         }
 
         /* Elegant Antique Header */
         header {
-            text-align: center;
-            padding: 15px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
             border-bottom: 2px double #8e7249;
-            margin-bottom: 5px;
-            position: relative;
+            background: rgba(250, 245, 235, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(44, 29, 17, 0.06);
+            flex-shrink: 0;
         }
-        header::after {
-            content: "❖";
-            display: block;
-            color: #8e7249;
-            font-size: 1.2rem;
-            margin-top: 5px;
-        }
-        h1 {
+        
+        .header-title-area h1 {
             font-family: 'Cinzel', serif;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #4a3319;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8), 0 0 1px rgba(0, 0, 0, 0.1);
         }
-        .subtitle {
+        .header-title-area .subtitle {
             font-family: 'Cinzel', serif;
-            font-size: 0.95rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: #8e7249;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         /* Main Workspace Grid (Desktop Side-by-Side) */
         .game-layout {
             display: grid;
-            grid-template-columns: 1.8fr 1fr;
-            gap: 25px;
-            align-items: start;
+            grid-template-columns: 1.95fr 1.05fr;
+            gap: 20px;
+            flex-grow: 1;
+            height: calc(100vh - 110px);
+            overflow: hidden;
+            align-items: stretch;
         }
 
         @media (max-width: 1100px) {
             .game-layout {
                 grid-template-columns: 1fr;
+                height: auto;
+                overflow: visible;
             }
         }
 
@@ -125,11 +138,11 @@
             border: 2px solid #dcd1bb;
             outline: 1px solid #b8a27d;
             outline-offset: -6px;
-            border-radius: 6px;
+            border-radius: 8px;
             box-shadow: 
-                0 10px 25px rgba(44, 29, 17, 0.12), 
-                inset 0 0 40px rgba(184, 162, 125, 0.2);
-            padding: 24px;
+                0 6px 18px rgba(44, 29, 17, 0.08), 
+                inset 0 0 40px rgba(184, 162, 125, 0.15);
+            padding: 20px;
             position: relative;
             transition: all 0.3s ease;
         }
@@ -142,84 +155,104 @@
             left: 10px;
             right: 10px;
             bottom: 10px;
-            border: 1px solid rgba(184, 162, 125, 0.35);
+            border: 1px solid rgba(184, 162, 125, 0.3);
             pointer-events: none;
-            border-radius: 4px;
+            border-radius: 6px;
         }
 
         /* Map Panel (Left side) */
         .map-panel {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            overflow: hidden;
+            padding: 12px;
         }
 
         .map-header {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: #4a3319;
-            border-bottom: 1px solid rgba(142, 114, 73, 0.3);
-            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(142, 114, 73, 0.2);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            z-index: 5;
         }
 
         .map-instructions {
-            font-size: 0.9rem;
+            width: 100%;
+            font-size: 0.8rem;
             color: #6d553b;
             font-style: italic;
-            font-weight: 500;
+            margin-bottom: 8px;
+            z-index: 5;
         }
 
-        /* Map Wrapper & Interactive Canvas layers */
-        .map-wrapper {
+        /* Map Wrapper & Interactive Canvas layers - Auto-fitting */
+        .map-container-box {
+            width: 100%;
+            flex-grow: 1;
             position: relative;
-            width: 100%;
-            border: 3px double #8e7249;
-            border-radius: 4px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            background-color: #eae1cd;
             overflow: hidden;
-            touch-action: none;
         }
 
-        .map-wrapper img {
-            width: 100%;
-            height: auto;
-            display: block;
-            user-select: none;
-            -webkit-user-drag: none;
-        }
-
-        /* Layer for markers and indicators overlay */
-        .marker-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
+        #map {
             width: 100%;
             height: 100%;
-            pointer-events: none; /* Clicks register on image */
+            border: 3px double #8e7249;
+            border-radius: 6px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            background-color: #eae1cd;
+            z-index: 1;
         }
 
-        /* Glowing City Hotspot Markers */
+        @media (max-width: 1100px) {
+            .map-container-box {
+                height: 500px;
+            }
+        }
+
+        /* Custom Leaflet Controls Styling */
+        .leaflet-bar {
+            border: 1px solid #8e7249 !important;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1) !important;
+            border-radius: 4px !important;
+            overflow: hidden;
+        }
+        .leaflet-bar a {
+            background-color: #faf5eb !important;
+            color: #8e7249 !important;
+            border-bottom: 1px solid #dcd1bb !important;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .leaflet-bar a:hover {
+            background-color: #f4eedb !important;
+            color: #6e5533 !important;
+        }
+        .leaflet-bar a.leaflet-disabled {
+            background-color: #eee !important;
+            color: #bbb !important;
+        }
+
+        /* Glowing City Hotspot Markers inside Leaflet */
         .city-marker {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            border-radius: 50%;
         }
 
         .city-marker.correct-glow {
             border: 3px solid #2e7d32;
             background-color: rgba(76, 175, 80, 0.35);
-            box-shadow: 0 0 15px #4caf50;
+            box-shadow: 0 0 12px #4caf50;
             animation: pulse-correct-marker 2s infinite;
         }
 
@@ -228,85 +261,85 @@
             color: #1b5e20;
             font-family: Arial, sans-serif;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             text-shadow: 1px 1px 0 #fff;
         }
 
         /* Pulse indicator for the current target city (hint) */
         .city-marker.target-hint {
             border: 2px dashed #b8860b;
-            background-color: rgba(218, 165, 32, 0.15);
+            background-color: rgba(218, 165, 32, 0.18);
             animation: pulse-hint-marker 1.5s infinite;
         }
 
         /* Dynamic click effect circle */
         .click-pulse {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            transform: translate(-50%, -50%) scale(0.1);
             border-radius: 50%;
             pointer-events: none;
             opacity: 1;
-            z-index: 20;
         }
 
         .click-pulse.success {
             border: 4px solid #4caf50;
-            background-color: rgba(76, 175, 80, 0.2);
+            background-color: rgba(76, 175, 80, 0.25);
             animation: explode-pulse 0.8s ease-out forwards;
         }
 
         .click-pulse.failure {
             border: 4px solid #f44336;
-            background-color: rgba(244, 67, 54, 0.2);
+            background-color: rgba(244, 67, 54, 0.25);
             animation: explode-pulse 0.8s ease-out forwards;
+        }
+
+        /* Custom Leaflet Tooltip Styling */
+        .marker-tooltip {
+            background-color: #faf5eb !important;
+            border: 1px solid #8e7249 !important;
+            color: #4a3319 !important;
+            font-family: 'Cinzel', serif !important;
+            font-weight: 700 !important;
+            font-size: 0.8rem !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15) !important;
+            border-radius: 4px !important;
+            padding: 4px 8px !important;
+        }
+        .marker-tooltip::before {
+            border-top-color: #8e7249 !important;
         }
 
         /* Keyframes for animations */
         @keyframes pulse-correct-marker {
-            0% {
-                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.8);
-            }
-            70% {
-                box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.8); }
+            70% { box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
         }
 
         @keyframes pulse-hint-marker {
-            0% {
-                transform: translate(-50%, -50%) scale(0.9);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(0.9);
-                opacity: 0.6;
-            }
+            0% { transform: scale(0.95); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.6; }
         }
 
         @keyframes explode-pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(0.1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1.4);
-                opacity: 0;
-            }
+            0% { transform: scale(0.1); opacity: 1; }
+            100% { transform: scale(1.4); opacity: 0; }
         }
 
         /* Sidebar Panel (Right side) */
         .sidebar {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
+            height: 100%;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                height: auto;
+                overflow: visible;
+            }
         }
 
         /* Status and Score Board */
@@ -314,15 +347,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(142, 114, 73, 0.25);
-            padding-bottom: 12px;
-            margin-bottom: 10px;
+            border-bottom: 2px solid rgba(142, 114, 73, 0.2);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
         }
 
         .status-title {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #8e7249;
             letter-spacing: 1px;
         }
@@ -330,30 +363,28 @@
         .status-value {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             color: #4a3319;
         }
 
         /* Progress Bar Indicators */
         .progress-container {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(17, 1fr);
+            gap: 3px;
+            margin-top: 8px;
         }
 
         .progress-dot {
-            flex-grow: 1;
             height: 6px;
-            min-width: 15px;
             background-color: #dcd1bb;
             border-radius: 3px;
             transition: all 0.3s ease;
         }
 
         .progress-dot.active {
-            background-color: #b8a27d;
-            box-shadow: 0 0 5px rgba(184, 162, 125, 0.5);
+            background-color: #8e7249;
+            box-shadow: 0 0 5px rgba(184, 162, 125, 0.6);
         }
 
         .progress-dot.completed {
@@ -364,7 +395,7 @@
         .clue-box {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 10px;
             background-color: #faf5eb;
             border-left: 4px solid #8e7249;
             padding-left: 15px;
@@ -373,16 +404,16 @@
 
         .clue-header {
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             color: #8e7249;
             text-transform: uppercase;
         }
 
         .clue-text {
-            font-size: 1.15rem;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.5;
             color: #2c1d11;
             font-style: italic;
         }
@@ -390,26 +421,26 @@
         .clue-citation {
             align-self: flex-end;
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #8e7249;
         }
 
         /* Message / Feedback Box */
         .feedback-box {
-            min-height: 50px;
+            min-height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: 600;
             border-radius: 4px;
-            padding: 12px;
-            font-size: 1rem;
-            line-height: 1.5;
-            transition: all 0.3s ease;
+            padding: 10px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            transition: all 0.25s ease;
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateY(8px);
         }
 
         .feedback-box.show {
@@ -433,42 +464,34 @@
         .fact-box {
             display: none;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             background-color: #fff9e6;
             border: 1px dashed #b8a27d;
             border-radius: 4px;
-            padding: 18px;
-            animation: roll-open 0.5s ease-out forwards;
-            box-shadow: inset 0 0 15px rgba(184, 162, 125, 0.15);
+            padding: 15px;
+            animation: roll-open 0.4s ease-out forwards;
+            box-shadow: inset 0 0 15px rgba(184, 162, 125, 0.12);
         }
 
         @keyframes roll-open {
-            0% {
-                opacity: 0;
-                transform: scaleY(0.7);
-                transform-origin: top;
-            }
-            100% {
-                opacity: 1;
-                transform: scaleY(1);
-                transform-origin: top;
-            }
+            0% { opacity: 0; transform: scaleY(0.85); transform-origin: top; }
+            100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
         }
 
         .fact-header {
             font-family: 'Cinzel', serif;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: #8e7249;
             letter-spacing: 1px;
             text-transform: uppercase;
-            border-bottom: 1px solid rgba(142, 114, 73, 0.2);
-            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(142, 114, 73, 0.15);
+            padding-bottom: 4px;
         }
 
         .fact-text {
-            font-size: 1rem;
-            line-height: 1.6;
+            font-size: 0.95rem;
+            line-height: 1.5;
             color: #3e2714;
         }
 
@@ -476,18 +499,18 @@
         .btn {
             font-family: 'Cinzel', serif;
             font-weight: 700;
-            font-size: 1rem;
-            letter-spacing: 2px;
+            font-size: 0.95rem;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             color: #faf5eb;
             background-color: #8e7249;
             border: 1px solid #785f3a;
             border-radius: 4px;
-            padding: 12px 24px;
+            padding: 10px 20px;
             cursor: pointer;
             width: 100%;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -496,27 +519,27 @@
 
         .btn:hover {
             background-color: #725a37;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 10px rgba(0,0,0,0.15);
             transform: translateY(-1px);
         }
 
         .btn:active {
             transform: translateY(1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
         }
 
         .btn-hint {
             background-color: transparent;
             color: #8e7249;
             border: 1px solid #8e7249;
-            margin-top: 10px;
-            font-size: 0.85rem;
+            margin-top: 5px;
+            font-size: 0.8rem;
             padding: 8px 16px;
             box-shadow: none;
         }
 
         .btn-hint:hover {
-            background-color: rgba(142, 114, 73, 0.1);
+            background-color: rgba(142, 114, 73, 0.08);
             color: #6e5533;
             box-shadow: none;
             transform: none;
@@ -526,15 +549,15 @@
         .game-complete-card {
             display: none;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             text-align: center;
-            padding: 35px 25px;
-            animation: roll-open 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            padding: 30px 20px;
+            animation: roll-open 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         .complete-title {
             font-family: 'Cinzel', serif;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 700;
             color: #2e7d32;
             letter-spacing: 1px;
@@ -543,13 +566,13 @@
 
         .complete-divider {
             color: #8e7249;
-            font-size: 1.5rem;
-            margin: 5px 0;
+            font-size: 1.2rem;
+            margin: 2px 0;
         }
 
         .complete-text {
-            font-size: 1.05rem;
-            line-height: 1.6;
+            font-size: 0.95rem;
+            line-height: 1.5;
             color: #2c1d11;
         }
 
@@ -567,12 +590,12 @@
         }
 
         .flash-overlay.correct-flash {
-            background-color: rgba(76, 175, 80, 0.12);
+            background-color: rgba(76, 175, 80, 0.1);
             animation: flash-pulse 0.4s ease-out;
         }
 
         .flash-overlay.incorrect-flash {
-            background-color: rgba(244, 67, 54, 0.12);
+            background-color: rgba(244, 67, 54, 0.1);
             animation: flash-pulse 0.4s ease-out;
         }
 
@@ -585,34 +608,35 @@
         /* Footer styling */
         footer {
             text-align: center;
-            padding: 20px 10px 5px 10px;
-            font-size: 0.8rem;
+            padding: 12px 10px 4px 10px;
+            font-size: 0.75rem;
             color: #8e7249;
             font-weight: 500;
-            border-top: 1px dashed rgba(142, 114, 73, 0.25);
-            margin-top: 20px;
+            border-top: 1px dashed rgba(142, 114, 73, 0.2);
+            margin-top: 10px;
+            flex-shrink: 0;
         }
 
         /* Audio Control Widget */
         .audio-control {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 6px;
+            font-size: 0.8rem;
             color: #6d553b;
             cursor: pointer;
             user-select: none;
             padding: 4px 8px;
             border-radius: 4px;
-            background: rgba(214, 193, 154, 0.15);
-            border: 1px solid rgba(142, 114, 73, 0.25);
+            background: rgba(214, 193, 154, 0.12);
+            border: 1px solid rgba(142, 114, 73, 0.2);
             transition: background 0.2s;
         }
         .audio-control:hover {
-            background: rgba(214, 193, 154, 0.3);
+            background: rgba(214, 193, 154, 0.22);
         }
         .audio-icon {
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
     </style>
 </head>
@@ -625,36 +649,35 @@
         
         <!-- Header -->
         <header>
-            <h1>Journeys of the Apostle Paul</h1>
-            <div class="subtitle">Educational Scriptural Map Game</div>
+            <div class="header-title-area">
+                <h1>Journeys of the Apostle Paul</h1>
+                <div class="subtitle">Educational Scriptural Map Game</div>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div id="mode-toggle" class="audio-control" title="Toggle between chronological and randomized stop order">
+                    <span id="mode-icon">📜</span>
+                    <span id="mode-text">Chronological</span>
+                </div>
+                <div id="audio-toggle" class="audio-control" title="Toggle sound effects">
+                    <span id="audio-icon" class="audio-icon">🔊</span>
+                    <span>Sound Chimes</span>
+                </div>
+            </div>
         </header>
 
         <!-- Main Game Layout Grid -->
         <div class="game-layout">
             
-            <!-- Left Side: Map Container -->
+            <!-- Left Side: Map Container (Responsive, Max-Sized) -->
             <div class="map-panel parchment-card">
                 <div class="map-header">
                     <span>Interactive Missionary Map</span>
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <div id="mode-toggle" class="audio-control" title="Toggle between chronological and randomized stop order">
-                            <span id="mode-icon">📜</span>
-                            <span id="mode-text">Chronological</span>
-                        </div>
-                        <div id="audio-toggle" class="audio-control" title="Toggle sound effects">
-                            <span id="audio-icon" class="audio-icon">🔊</span>
-                            <span>Sound Chimes</span>
-                        </div>
-                    </div>
                 </div>
-                <p class="map-instructions">Read the scripture clue on the right, then locate and click the correct city dot on the map.</p>
+                <p class="map-instructions">Read the scripture clue, then locate and click the correct city dot on the map. Drag to pan, scroll or pinch to zoom!</p>
                 
-                <div class="map-wrapper" id="map-wrapper">
-                    <!-- Custom Map Image -->
-                    <img src="image.png" id="map-image" alt="Missionary Journeys of Apostle Paul Map">
-                    
-                    <!-- Overlay layer for interactive coordinates & feedback markers -->
-                    <div class="marker-overlay" id="marker-overlay"></div>
+                <div class="map-container-box">
+                    <!-- Zoomable Leaflet.js Container -->
+                    <div id="map"></div>
                 </div>
             </div>
 
@@ -662,7 +685,7 @@
             <div class="sidebar">
                 
                 <!-- Active Game Screen Panel -->
-                <div id="game-active-card" class="parchment-card" style="display: flex; flex-direction: column; gap: 20px;">
+                <div id="game-active-card" class="parchment-card" style="display: flex; flex-direction: column; gap: 15px;">
                     <!-- Status Header -->
                     <div>
                         <div class="status-board">
@@ -709,11 +732,11 @@
                     <p class="complete-text" id="completion-summary">
                         Praiseworthy examination! You completed the missionary journeys and verified all locations.
                     </p>
-                    <div class="complete-divider" style="font-size: 1rem;">Acts 17:11</div>
-                    <p class="complete-text" style="font-style: italic; color: #6d553b; font-size: 0.95rem; margin-top: -10px;">
+                    <div class="complete-divider" style="font-size: 0.95rem;">Acts 17:11</div>
+                    <p class="complete-text" style="font-style: italic; color: #6d553b; font-size: 0.9rem; margin-top: -6px;">
                         "Now these were more noble-minded than those in Thessalonica, for they accepted the word with the greatest eagerness of mind, carefully examining the Scriptures daily..."
                     </p>
-                    <button class="btn" id="btn-restart" style="margin-top: 15px;">
+                    <button class="btn" id="btn-restart" style="margin-top: 10px;">
                         <span>Restart Missionary Tour</span> ↺
                     </button>
                 </div>
@@ -724,7 +747,7 @@
         <!-- Footer -->
         <footer>
             <p>Made for Educational Bible Study. Lesson references and scripture citations are based on the publication <a href="https://wol.jw.org/en/wol/publication/r1/lp-e/lfb" target="_blank" rel="noopener" style="color: #8e7249; text-decoration: underline;"><em>Lessons You Can Learn From the Bible</em></a>.</p>
-            <p style="margin-top: 5px; font-size: 0.75rem; opacity: 0.85;">This website is for educational purposes only and is not an official website of, or affiliated with, jw.org.</p>
+            <p style="margin-top: 4px; font-size: 0.7rem; opacity: 0.8;">This website is for educational purposes only and is not an official website of, or affiliated with, jw.org.</p>
         </footer>
     </div>
 
@@ -732,7 +755,7 @@
         // --- 1. Sound Engine (Web Audio API Synthesizer) ---
         let soundEnabled = true;
         
-        // Handle audio context safety rules (resume context on user interaction)
+        // Handle audio context safety rules
         let audioCtx = null;
         function getAudioContext() {
             if (!audioCtx) {
@@ -744,18 +767,16 @@
             return audioCtx;
         }
 
-        // iPad / iOS Web Audio Unlocker (Safari blocks audio until a hardware-level user event fires)
+        // iPad / iOS Web Audio Unlocker
         function unlockAudioOniOS() {
             const ctx = getAudioContext();
             if (ctx) {
-                // Play a brief silent note to force Safari to unlock the audio hardware output stream
                 const buffer = ctx.createBuffer(1, 1, 22050);
                 const source = ctx.createBufferSource();
                 source.buffer = buffer;
                 source.connect(ctx.destination);
                 source.start(0);
                 
-                // Clean up all events once successfully unlocked
                 const events = ['click', 'touchstart', 'mousedown'];
                 events.forEach(evt => {
                     document.removeEventListener(evt, unlockAudioOniOS, true);
@@ -763,7 +784,6 @@
             }
         }
         
-        // Bind unlock listeners on first page interaction
         document.addEventListener('click', unlockAudioOniOS, true);
         document.addEventListener('touchstart', unlockAudioOniOS, true);
         document.addEventListener('mousedown', unlockAudioOniOS, true);
@@ -783,7 +803,6 @@
             try {
                 const ctx = getAudioContext();
                 const startTime = ctx.currentTime;
-                // E-major arpeggio: E5, G#5, B5, E6
                 const notes = [659.25, 830.61, 987.77, 1318.51];
                 
                 notes.forEach((freq, index) => {
@@ -836,31 +855,31 @@
         }
 
         // --- 2. Scriptural Trivia Database & Coordinate Maps ---
-        // Coordinates map to the exact centers of white circles on image.png (1408x768 scale)
+        // Coordinates map to the exact centers of labeled circles on the new map (1408x768 scale)
         const CITIES = {
-            EPHESUS: { x: 713, y: 319, name: 'Ephesus' },
-            TROAS: { x: 664, y: 207, name: 'Troas' },
-            LYSTRA: { x: 926, y: 322, name: 'Lystra' },
-            BEROEA: { x: 496, y: 152, name: 'Beroea' },
-            THESSALONICA: { x: 428, y: 163, name: 'Thessalonica' },
-            PHILIPPI: { x: 578, y: 128, name: 'Philippi' },
-            CORINTH: { x: 500, y: 328, name: 'Corinth' },
-            ATHENS: { x: 533, y: 315, name: 'Athens' },
-            ANTIOCH_PISIDIAN: { x: 888, y: 304, name: 'Antioch (Pisidian)' },
-            ICONIUM: { x: 967, y: 319, name: 'Iconium' },
-            DERBE: { x: 982, y: 348, name: 'Derbe' },
-            PERGA: { x: 879, y: 381, name: 'Perga' },
-            ANTIOCH_SYRIAN: { x: 1152, y: 417, name: 'Antioch (Syrian)' },
-            SALAMIS: { x: 1039, y: 478, name: 'Salamis' },
-            PAPHOS: { x: 973, y: 506, name: 'Paphos' },
-            TYRE: { x: 1106, y: 591, name: 'Tyre' },
-            CAESAREA: { x: 1099, y: 625, name: 'Caesarea' },
-            JERUSALEM: { x: 1112, y: 667, name: 'Jerusalem' },
-            MALTA: { x: 81, y: 439, name: 'Malta' },
-            DAMASCUS: { x: 1170, y: 575, name: 'Damascus' },
-            JOPPA: { x: 1095, y: 650, name: 'Joppa' },
-            ROME: { x: 62, y: 142, name: 'Rome' },
-            CYPRUS: { x: 1010, y: 482, name: 'Cyprus (Island)' }
+            EPHESUS: { x: 729, y: 323, name: 'Ephesus' },
+            TROAS: { x: 664, y: 209, name: 'Troas' },
+            LYSTRA: { x: 929, y: 322, name: 'Lystra' },
+            BEROEA: { x: 501, y: 155, name: 'Beroea' },
+            THESSALONICA: { x: 438, y: 159, name: 'Thessalonica' },
+            PHILIPPI: { x: 579, y: 149, name: 'Philippi' },
+            CORINTH: { x: 501, y: 330, name: 'Corinth' },
+            ATHENS: { x: 533, y: 326, name: 'Athens' },
+            ANTIOCH_PISIDIAN: { x: 876, y: 295, name: 'Antioch (Pisidian)' },
+            ICONIUM: { x: 966, y: 331, name: 'Iconium' },
+            DERBE: { x: 982, y: 347, name: 'Derbe' },
+            PERGA: { x: 887, y: 368, name: 'Perga' },
+            ANTIOCH_SYRIAN: { x: 1153, y: 426, name: 'Antioch (Syrian)' },
+            SALAMIS: { x: 1044, y: 470, name: 'Salamis' },
+            PAPHOS: { x: 950, y: 530, name: 'Paphos' },
+            TYRE: { x: 1113, y: 598, name: 'Tyre' },
+            CAESAREA: { x: 1125, y: 640, name: 'Caesarea' },
+            JERUSALEM: { x: 1122, y: 668, name: 'Jerusalem' },
+            MALTA: { x: 47, y: 440, name: 'Malta' },
+            ROME: { x: 115, y: 151, name: 'Rome' },
+            DAMASCUS: { x: 1177, y: 597, name: 'Damascus' },
+            JOPPA: { x: 1110, y: 656, name: 'Joppa' },
+            CYPRUS: { x: 1020, y: 515, name: 'Cyprus (Island)' }
         };
 
         const QUESTIONS = [
@@ -999,12 +1018,13 @@
         const ORIGINAL_HEIGHT = 768;
         const CLICK_THRESHOLD = 26; // Radius in pixels at which a click registers on a city
 
-        // --- 4. DOM Elements ---
-        const mapImage = document.getElementById('map-image');
-        const mapWrapper = document.getElementById('map-wrapper');
-        const markerOverlay = document.getElementById('marker-overlay');
-        const flashOverlay = document.getElementById('flash-overlay');
+        // Leaflet references
+        let map;
+        let markerGroup;
+        const bounds = [[-ORIGINAL_HEIGHT, 0], [0, ORIGINAL_WIDTH]];
 
+        // --- 4. DOM Elements ---
+        const flashOverlay = document.getElementById('flash-overlay');
         const currentQuestionNum = document.getElementById('current-question-num');
         const scoreDisplay = document.getElementById('score-display');
         const clueText = document.getElementById('clue-text');
@@ -1025,6 +1045,30 @@
         const completionSummary = document.getElementById('completion-summary');
 
         // --- 5. Game Functions ---
+
+        // Initialize Leaflet Map
+        function initMap() {
+            map = L.map('map', {
+                crs: L.CRS.Simple,
+                minZoom: -1.2,
+                maxZoom: 2,
+                zoomSnap: 0,
+                maxBounds: bounds,
+                maxBoundsViscosity: 1.0,
+                attributionControl: false,
+                doubleClickZoom: false
+            });
+            
+            // Add custom image overlay
+            L.imageOverlay('image.png', bounds).addTo(map);
+            map.fitBounds(bounds);
+            
+            // Layer group for our permanent city pins
+            markerGroup = L.layerGroup().addTo(map);
+            
+            // Bind click handler directly to map canvas
+            map.on('click', handleMapClick);
+        }
 
         // Fisher-Yates Shuffle Algorithm
         function shuffleArray(array) {
@@ -1049,13 +1093,20 @@
             }
             
             // Clear markers
-            markerOverlay.innerHTML = '';
+            if (markerGroup) {
+                markerGroup.clearLayers();
+            }
             
             gameCompleteCard.style.display = 'none';
             gameActiveCard.style.display = 'flex';
             
             updateScoreBoard();
             loadQuestion(currentQuestionIndex);
+            
+            // Reset map viewport view
+            if (map) {
+                map.setView([-ORIGINAL_HEIGHT / 2, ORIGINAL_WIDTH / 2], -1);
+            }
         }
 
         // Load a specific question
@@ -1106,9 +1157,9 @@
 
         // Draw permanent markers for correct cities and remove transient ones
         function redrawMarkers() {
-            // Keep only permanent indicators of discovered cities
-            markerOverlay.innerHTML = '';
-            
+            if (markerGroup) {
+                markerGroup.clearLayers();
+            }
             discoveredCities.forEach(cityKey => {
                 const city = CITIES[cityKey];
                 if (city) {
@@ -1117,14 +1168,16 @@
             });
         }
 
-        // Create a green permanent marker on the map
+        // Create a green permanent marker on the map using Leaflet
         function createPermanentMarker(x, y, label) {
-            const marker = document.createElement('div');
-            marker.className = 'city-marker correct-glow';
-            marker.style.left = `${(x / ORIGINAL_WIDTH) * 100}%`;
-            marker.style.top = `${(y / ORIGINAL_HEIGHT) * 100}%`;
-            marker.title = label;
-            markerOverlay.appendChild(marker);
+            const icon = L.divIcon({
+                className: 'city-marker correct-glow',
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+            
+            const marker = L.marker([-y, x], { icon: icon }).addTo(markerGroup);
+            marker.bindTooltip(label, { permanent: true, direction: 'top', className: 'marker-tooltip' });
         }
 
         // Show a visual flash overlay on the screen
@@ -1135,14 +1188,14 @@
             flashOverlay.classList.add(isCorrect ? 'correct-flash' : 'incorrect-flash');
         }
 
-        // Dynamic click indicator (burst pulse circle) at scaled click coordinates
+        // Dynamic click indicator (burst pulse circle) at coordinate
         function triggerClickIndicator(x, y, isCorrect) {
-            const pulse = document.createElement('div');
-            pulse.className = `click-pulse ${isCorrect ? 'success' : 'failure'}`;
-            pulse.style.left = `${(x / ORIGINAL_WIDTH) * 100}%`;
-            pulse.style.top = `${(y / ORIGINAL_HEIGHT) * 100}%`;
-            
-            markerOverlay.appendChild(pulse);
+            const icon = L.divIcon({
+                className: `click-pulse ${isCorrect ? 'success' : 'failure'}`,
+                iconSize: [44, 44],
+                iconAnchor: [22, 22]
+            });
+            const pulse = L.marker([-y, x], { icon: icon }).addTo(map);
             
             // Clean up pulse element after animation
             setTimeout(() => {
@@ -1172,25 +1225,18 @@
             // Do not process map clicks if question is already answered
             if (questionAnswered) return;
             
-            // Trigger audio context activation on first click
             getAudioContext();
 
-            // Calculate bounding rectangle of map image
-            const rect = mapImage.getBoundingClientRect();
+            // Direct pixel coordinates from simple CRS
+            const clickX = e.latlng.lng;
+            const clickY = -e.latlng.lat; // Invert latitude to get positive Y coord
             
-            // Relative click offset on the image element
-            const relX = e.clientX - rect.left;
-            const relY = e.clientY - rect.top;
+            // Validate bounding box bounds to prevent clicks outside map image
+            if (clickX < 0 || clickX > ORIGINAL_WIDTH || clickY < 0 || clickY > ORIGINAL_HEIGHT) {
+                return;
+            }
             
-            // Translate to original map scale coords (1408x768)
-            const imgW = mapImage.naturalWidth || ORIGINAL_WIDTH;
-            const imgH = mapImage.naturalHeight || ORIGINAL_HEIGHT;
-            
-            const originalClickX = relX * (imgW / rect.width);
-            const originalClickY = relY * (imgH / rect.height);
-            
-            // Find closest city next to the clicked coordinate
-            const clickedCityKey = findNearestCity(originalClickX, originalClickY);
+            const clickedCityKey = findNearestCity(clickX, clickY);
             const currentQ = activeQuestions[currentQuestionIndex];
             const targetCity = CITIES[currentQ.targetCityKey];
 
@@ -1200,25 +1246,17 @@
                 score++;
                 discoveredCities.push(clickedCityKey);
                 
-                // Audio success chime
                 playSuccessChime();
-                
-                // Screen Green Flash
                 triggerScreenFlash(true);
-                
-                // Click Green Indicator
                 triggerClickIndicator(targetCity.x, targetCity.y, true);
                 
-                // Sidebar UI updates
                 feedbackBox.textContent = `✓ Correct! You found ${targetCity.name}.`;
                 feedbackBox.className = 'feedback-box show correct';
                 
-                // Reveal scriptural facts and "Next Stop" button
                 factText.textContent = currentQ.factText;
                 factBox.style.display = 'flex';
                 btnHint.style.display = 'none';
                 
-                // Redraw map markers
                 redrawMarkers();
                 
             } else {
@@ -1228,10 +1266,9 @@
                 triggerScreenFlash(false);
                 
                 let feedbackText = "Take a closer look at the context in your Bible! Try searching the accounts in Acts.";
-                let clickPulseX = originalClickX;
-                let clickPulseY = originalClickY;
+                let clickPulseX = clickX;
+                let clickPulseY = clickY;
                 
-                // If they clicked another city dot, tell them which city they clicked
                 if (clickedCityKey) {
                     const wrongCity = CITIES[clickedCityKey];
                     feedbackText = `That is ${wrongCity.name}! Take a closer look at the context in your Bible! Try searching the accounts in Acts.`;
@@ -1239,7 +1276,6 @@
                     clickPulseY = wrongCity.y;
                 }
                 
-                // Click Red Indicator
                 triggerClickIndicator(clickPulseX, clickPulseY, false);
                 
                 feedbackBox.textContent = feedbackText;
@@ -1259,20 +1295,22 @@
             const targetCity = CITIES[q.targetCityKey];
             
             if (targetCity) {
-                const hintMarker = document.createElement('div');
-                hintMarker.className = 'city-marker target-hint';
-                hintMarker.style.left = `${(targetCity.x / ORIGINAL_WIDTH) * 100}%`;
-                hintMarker.style.top = `${(targetCity.y / ORIGINAL_HEIGHT) * 100}%`;
+                const icon = L.divIcon({
+                    className: 'city-marker target-hint',
+                    iconSize: [28, 28],
+                    iconAnchor: [14, 14]
+                });
+                const hintMarker = L.marker([-targetCity.y, targetCity.x], { icon: icon }).addTo(map);
                 
-                markerOverlay.appendChild(hintMarker);
+                // Smoothly pan and zoom map center to target city
+                map.setView([-targetCity.y, targetCity.x], 0.5, { animate: true });
                 
-                // Remove the hint indicator after 4 seconds
                 setTimeout(() => {
                     hintMarker.remove();
                 }, 4000);
                 
-                feedbackBox.textContent = "A dynamic hint circle is pulsing on the map! Look closely at the region.";
-                feedbackBox.className = 'feedback-box show correct'; // styled neutral-green for encouragement
+                feedbackBox.textContent = "Look closely! The map has panned and a hint circle is pulsing around the correct region.";
+                feedbackBox.className = 'feedback-box show correct';
             }
         }
 
@@ -1283,7 +1321,6 @@
             if (currentQuestionIndex < activeQuestions.length) {
                 loadQuestion(currentQuestionIndex);
             } else {
-                // End of game
                 showGameCompletion();
             }
         }
@@ -1308,7 +1345,6 @@
             getAudioContext();
             randomModeActive = !randomModeActive;
             
-            // Update mode UI
             if (randomModeActive) {
                 modeIcon.textContent = '🔀';
                 modeText.textContent = 'Randomized';
@@ -1319,18 +1355,19 @@
                 modeToggle.title = 'Switch to randomized stop order';
             }
             
-            // Restart game with new mode
             initGame();
         });
 
         // --- 6. Event Listeners ---
-        mapWrapper.addEventListener('click', handleMapClick);
         btnNext.addEventListener('click', proceedToNextQuestion);
         btnHint.addEventListener('click', showHint);
         btnRestart.addEventListener('click', initGame);
 
-        // Start game on load
-        window.addEventListener('load', initGame);
+        // Start game and map on load
+        window.addEventListener('load', () => {
+            initMap();
+            initGame();
+        });
         
     </script>
 </body>
