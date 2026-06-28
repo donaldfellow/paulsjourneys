@@ -123,11 +123,6 @@
             margin-top: 2px;
         }
 
-        /* Main Workspace Grid (Unused in Full Screen, but left clean) */
-        .game-layout {
-            display: none;
-        }
-
         /* Parchment Cards Design System */
         .parchment-card {
             background-color: rgba(250, 245, 235, 0.95);
@@ -140,7 +135,7 @@
             box-shadow: 
                 0 6px 20px rgba(0, 0, 0, 0.15), 
                 inset 0 0 30px rgba(184, 162, 125, 0.15);
-            padding: 20px;
+            padding: 15px 20px;
             position: relative;
             transition: all 0.3s ease;
             box-sizing: border-box;
@@ -157,31 +152,6 @@
             border: 1px solid rgba(184, 162, 125, 0.3);
             pointer-events: none;
             border-radius: 6px;
-        }
-
-        /* Floating Sidebar Panel (Right side) */
-        .sidebar {
-            position: absolute;
-            top: 100px;
-            right: 15px;
-            bottom: 15px;
-            width: 380px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-            pointer-events: auto;
-            z-index: 1000;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(142, 114, 73, 0.5) transparent;
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background-color: rgba(142, 114, 73, 0.5);
-            border-radius: 3px;
         }
 
         #map {
@@ -311,54 +281,66 @@
             100% { transform: scale(1.4); opacity: 0; }
         }
 
-        /* Sidebar Panel (Right side) */
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                gap: 8px;
-                text-align: center;
-                align-items: center;
-                top: 10px;
-                left: 10px;
-                right: 10px;
-            }
-            header h1 {
-                font-size: 1.1rem;
-            }
-            .sidebar {
-                top: auto;
-                left: 10px;
-                right: 10px;
-                bottom: 10px;
-                width: auto;
-                max-height: 45vh;
-                overflow-y: auto;
-                flex-direction: column;
-            }
+        /* Floating Bottom Card Panel */
+        .bottom-card {
+            position: absolute;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 850px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: auto;
         }
 
-        /* Status and Score Board */
-        .status-board {
+        .bottom-card-content {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .bottom-left-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .bottom-right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .top-row-status {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(142, 114, 73, 0.2);
-            padding-bottom: 8px;
-            margin-bottom: 8px;
+            border-bottom: 1px solid rgba(142, 114, 73, 0.2);
+            padding-bottom: 4px;
+        }
+
+        .status-item {
+            display: flex;
+            gap: 6px;
+            align-items: center;
         }
 
         .status-title {
             font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
             font-weight: 700;
-            font-size: 0.85rem;
             color: #8e7249;
-            letter-spacing: 1px;
         }
 
         .status-value {
             font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
             font-weight: 700;
-            font-size: 1.15rem;
             color: #4a3319;
         }
 
@@ -367,13 +349,13 @@
             display: grid;
             grid-template-columns: repeat(17, 1fr);
             gap: 3px;
-            margin-top: 8px;
+            margin-top: 4px;
         }
 
         .progress-dot {
-            height: 6px;
+            height: 5px;
             background-color: #dcd1bb;
-            border-radius: 3px;
+            border-radius: 2px;
             transition: all 0.3s ease;
         }
 
@@ -390,25 +372,25 @@
         .clue-box {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            background-color: #faf5eb;
-            border-left: 4px solid #8e7249;
-            padding-left: 15px;
+            gap: 6px;
+            background-color: transparent;
+            border-left: 3px solid #8e7249;
+            padding-left: 12px;
             position: relative;
         }
 
         .clue-header {
             font-family: 'Cinzel', serif;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             color: #8e7249;
             text-transform: uppercase;
         }
 
         .clue-text {
-            font-size: 1.05rem;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            line-height: 1.4;
             color: #2c1d11;
             font-style: italic;
         }
@@ -416,26 +398,27 @@
         .clue-citation {
             align-self: flex-end;
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: #8e7249;
+            margin-top: 4px;
         }
 
         /* Message / Feedback Box */
         .feedback-box {
-            min-height: 44px;
+            min-height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             font-weight: 600;
             border-radius: 4px;
-            padding: 10px;
-            font-size: 0.95rem;
-            line-height: 1.4;
+            padding: 6px;
+            font-size: 0.85rem;
+            line-height: 1.3;
             transition: all 0.25s ease;
             opacity: 0;
-            transform: translateY(8px);
+            transform: translateY(4px);
         }
 
         .feedback-box.show {
@@ -459,35 +442,55 @@
         .fact-box {
             display: none;
             flex-direction: column;
-            gap: 12px;
+            gap: 6px;
             background-color: #fff9e6;
             border: 1px dashed #b8a27d;
             border-radius: 4px;
-            padding: 15px;
-            animation: roll-open 0.4s ease-out forwards;
-            box-shadow: inset 0 0 15px rgba(184, 162, 125, 0.12);
-        }
-
-        @keyframes roll-open {
-            0% { opacity: 0; transform: scaleY(0.85); transform-origin: top; }
-            100% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+            padding: 8px;
+            margin-top: 4px;
         }
 
         .fact-header {
             font-family: 'Cinzel', serif;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: #8e7249;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(142, 114, 73, 0.15);
-            padding-bottom: 4px;
+            border-bottom: 1px solid rgba(142,114,73,0.15);
+            padding-bottom: 2px;
         }
 
         .fact-text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #3e2714;
+            font-size: 0.8rem;
+            line-height: 1.35;
+            color: #3d2c1c;
+            max-height: 80px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        /* Footer inside Bottom Card */
+        footer {
+            margin: 0;
+            padding: 4px 10px;
+            text-align: center;
+            font-size: 0.65rem;
+            color: #6d553b;
+            background: rgba(250, 245, 235, 0.65);
+            backdrop-filter: blur(4px);
+            border-radius: 6px;
+            border: 1px solid rgba(142, 114, 73, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .bottom-card {
+                max-height: 48vh;
+                overflow-y: auto;
+                bottom: 10px;
+            }
+            .bottom-card-content {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
         }
 
         /* Buttons Styling */
@@ -663,59 +666,62 @@
             </div>
         </header>
 
-        <!-- Floating Sidebar Panel -->
-        <div class="sidebar">
-            
-            <!-- Active Game Screen Panel -->
-            <div id="game-active-card" class="parchment-card" style="display: flex; flex-direction: column; gap: 15px;">
-                <!-- Status Header -->
-                <div>
-                    <div class="status-board">
-                        <span class="status-title">Current Journey Stop</span>
-                        <span class="status-value" id="current-question-num">1 of 17</span>
+        <!-- Floating Bottom Card Panel -->
+        <div class="bottom-card">
+            <div class="parchment-card" id="game-active-card">
+                <div class="bottom-card-content">
+                    <!-- Left Side: Clue -->
+                    <div class="bottom-left-panel">
+                        <div class="clue-box" id="clue-box">
+                            <div class="clue-header">Scripture Clue</div>
+                            <div class="clue-text" id="clue-text">Loading clue...</div>
+                            <div class="clue-citation" id="clue-citation">Acts</div>
+                        </div>
                     </div>
-                    <div class="status-board" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
-                        <span class="status-title">Total Score</span>
-                        <span class="status-value" id="score-display">0 / 17</span>
-                    </div>
-                    <!-- Progress Dots -->
-                    <div class="progress-container" id="progress-container">
-                        <!-- Generated dynamically in JS -->
+                    
+                    <!-- Right Side: Info & Actions -->
+                    <div class="bottom-right-panel">
+                        <div class="top-row-status">
+                            <div class="status-item">
+                                <span class="status-title">Stop:</span>
+                                <span class="status-value" id="current-question-num">1 of 17</span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-title">Score:</span>
+                                <span class="status-value" id="score-display">0 / 17</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Indicators -->
+                        <div class="progress-container" id="progress-container"></div>
+                        
+                        <!-- Answer Feedback Box (Shows correct/incorrect notifications) -->
+                        <div class="feedback-box" id="feedback-box"></div>
+                        
+                        <!-- Scriptural Fact Box (Revealed upon correct answer) -->
+                        <div class="fact-box" id="fact-box">
+                            <div class="fact-header">Scriptural Significance ❖</div>
+                            <div class="fact-text" id="fact-text">Loading facts...</div>
+                            <button class="btn" id="btn-next">
+                                <span>Proceed to Next Stop</span> ➜
+                            </button>
+                        </div>
+                        
+                        <!-- Interactive Hint Button -->
+                        <button class="btn btn-hint" id="btn-hint">Need a Hint?</button>
                     </div>
                 </div>
-
-                <!-- Clue Scroll Container -->
-                <div class="clue-box" id="clue-box">
-                    <div class="clue-header">Scripture Clue</div>
-                    <div class="clue-text" id="clue-text">Loading clue...</div>
-                    <div class="clue-citation" id="clue-citation">Acts</div>
-                </div>
-
-                <!-- Answer Feedback Box (Shows correct/incorrect notifications) -->
-                <div class="feedback-box" id="feedback-box"></div>
-
-                <!-- Scriptural Fact Box (Revealed upon correct answer) -->
-                <div class="fact-box" id="fact-box">
-                    <div class="fact-header">Scriptural Significance ❖</div>
-                    <div class="fact-text" id="fact-text">Loading facts...</div>
-                    <button class="btn" id="btn-next">
-                        <span>Proceed to Next Stop</span> ➜
-                    </button>
-                </div>
-
-                <!-- Interactive Hint Button -->
-                <button class="btn btn-hint" id="btn-hint">Need a Scriptural Hint?</button>
             </div>
 
-            <!-- Game Completion Screen Panel -->
-            <div id="game-complete-card" class="parchment-card game-complete-card">
+            <!-- Game Completion Card (Fills bottom card area when finished) -->
+            <div id="game-complete-card" class="parchment-card game-complete-card" style="display: none;">
                 <div class="complete-title">Journey Complete!</div>
                 <div class="complete-divider">❖   ❖   ❖</div>
                 <p class="complete-text" id="completion-summary">
                     Praiseworthy examination! You completed the missionary journeys and verified all locations.
                 </p>
-                <div class="complete-divider" style="font-size: 0.95rem;">Acts 17:11</div>
-                <p class="complete-text" style="font-style: italic; color: #6d553b; font-size: 0.9rem; margin-top: -6px;">
+                <div class="complete-divider" style="font-size: 0.85rem;">Acts 17:11</div>
+                <p class="complete-text" style="font-style: italic; color: #6d553b; font-size: 0.8rem; margin-top: -6px;">
                     "Now these were more noble-minded than those in Thessalonica, for they accepted the word with the greatest eagerness of mind, carefully examining the Scriptures daily..."
                 </p>
                 <button class="btn" id="btn-restart" style="margin-top: 10px;">
@@ -723,10 +729,9 @@
                 </button>
             </div>
 
-            <!-- Footer Card integrated inside Sidebar -->
+            <!-- Floating Footer under Bottom Card -->
             <footer>
-                <p>Made for Educational Bible Study. Lesson references and scripture citations are based on the publication <a href="https://wol.jw.org/en/wol/publication/r1/lp-e/lfb" target="_blank" rel="noopener" style="color: #8e7249; text-decoration: underline;"><em>Lessons You Can Learn From the Bible</em></a>.</p>
-                <p style="margin-top: 4px; font-size: 0.65rem; opacity: 0.8;">This website is for educational purposes only and is not an official website of, or affiliated with, jw.org.</p>
+                <p>Lesson references based on the publication <a href="https://wol.jw.org/en/wol/publication/r1/lp-e/lfb" target="_blank" rel="noopener" style="color: #8e7249; text-decoration: underline;"><em>Lessons You Can Learn From the Bible</em></a>. Not an official website of jw.org.</p>
             </footer>
         </div>
     </div>
@@ -837,29 +842,29 @@
         // --- 2. Scriptural Trivia Database & Coordinate Maps ---
         // Coordinates map to the exact centers of labeled circles on the new map (1408x768 scale)
         const CITIES = {
-            EPHESUS: { x: 744, y: 370, name: 'Ephesus' },
-            TROAS: { x: 720, y: 260, name: 'Troas' },
-            LYSTRA: { x: 978, y: 364, name: 'Lystra' },
-            BEROEA: { x: 540, y: 210, name: 'Beroea' },
-            THESSALONICA: { x: 574, y: 175, name: 'Thessalonica' },
-            PHILIPPI: { x: 640, y: 145, name: 'Philippi' },
-            CORINTH: { x: 528, y: 340, name: 'Corinth' },
-            ATHENS: { x: 570, y: 326, name: 'Athens' },
-            ANTIOCH_PISIDIAN: { x: 879, y: 290, name: 'Antioch (Pisidian)' },
-            ICONIUM: { x: 1030, y: 370, name: 'Iconium' },
-            DERBE: { x: 1056, y: 357, name: 'Derbe' },
-            PERGA: { x: 947, y: 420, name: 'Perga' },
-            ANTIOCH_SYRIAN: { x: 1225, y: 428, name: 'Antioch (Syrian)' },
-            SALAMIS: { x: 1056, y: 510, name: 'Salamis' },
-            PAPHOS: { x: 960, y: 524, name: 'Paphos' },
-            TYRE: { x: 1156, y: 610, name: 'Tyre' },
-            CAESAREA: { x: 1210, y: 640, name: 'Caesarea' },
-            JERUSALEM: { x: 1212, y: 672, name: 'Jerusalem' },
-            MALTA: { x: 190, y: 470, name: 'Malta' },
-            ROME: { x: 114, y: 135, name: 'Rome' },
-            DAMASCUS: { x: 1226, y: 586, name: 'Damascus' },
-            JOPPA: { x: 1188, y: 648, name: 'Joppa' },
-            CYPRUS: { x: 1020, y: 515, name: 'Cyprus (Island)' }
+            EPHESUS: { x: 740, y: 366, name: 'Ephesus' },
+            TROAS: { x: 730, y: 262, name: 'Troas' },
+            LYSTRA: { x: 981, y: 378, name: 'Lystra' },
+            BEROEA: { x: 544, y: 196, name: 'Beroea' },
+            THESSALONICA: { x: 572, y: 196, name: 'Thessalonica' },
+            PHILIPPI: { x: 626, y: 144, name: 'Philippi' },
+            CORINTH: { x: 524, y: 332, name: 'Corinth' },
+            ATHENS: { x: 572, y: 327, name: 'Athens' },
+            ANTIOCH_PISIDIAN: { x: 880, y: 292, name: 'Antioch (Pisidian)' },
+            ICONIUM: { x: 1028, y: 370, name: 'Iconium' },
+            DERBE: { x: 1056, y: 356, name: 'Derbe' },
+            PERGA: { x: 942, y: 426, name: 'Perga' },
+            ANTIOCH_SYRIAN: { x: 1232, y: 447, name: 'Antioch (Syrian)' },
+            SALAMIS: { x: 1053, y: 527, name: 'Salamis' },
+            PAPHOS: { x: 957, y: 533, name: 'Paphos' },
+            TYRE: { x: 1161, y: 614, name: 'Tyre' },
+            CAESAREA: { x: 1194, y: 642, name: 'Caesarea' },
+            JERUSALEM: { x: 1134, y: 667, name: 'Jerusalem' },
+            MALTA: { x: 185, y: 475, name: 'Malta' },
+            ROME: { x: 114, y: 147, name: 'Rome' },
+            DAMASCUS: { x: 1233, y: 592, name: 'Damascus' },
+            JOPPA: { x: 1122, y: 649, name: 'Joppa' },
+            CYPRUS: { x: 1033, y: 520, name: 'Cyprus (Island)' }
         };
 
         const QUESTIONS = [
@@ -1032,7 +1037,7 @@
                 crs: L.CRS.Simple,
                 minZoom: -1.2,
                 maxZoom: 2,
-                zoomSnap: 0,
+                zoomSnap: 0.1,
                 maxBounds: bounds,
                 maxBoundsViscosity: 1.0,
                 attributionControl: false,
@@ -1045,7 +1050,6 @@
             
             // Add custom image overlay
             L.imageOverlay('image.png', bounds).addTo(map);
-            map.fitBounds(bounds);
             
             // Layer group for our permanent city pins
             markerGroup = L.layerGroup().addTo(map);
@@ -1087,9 +1091,9 @@
             updateScoreBoard();
             loadQuestion(currentQuestionIndex);
             
-            // Reset map viewport view
-            if (map) {
-                map.setView([-ORIGINAL_HEIGHT / 2, ORIGINAL_WIDTH / 2], -1);
+            // Reset map viewport view to first city's region
+            if (map && activeQuestions.length > 0) {
+                panToCityRegion(activeQuestions[0].targetCityKey);
             }
         }
 
@@ -1098,7 +1102,7 @@
             questionAnswered = false;
             const q = activeQuestions[index];
             
-            // Reset Sidebar UI
+            // Reset UI
             clueText.textContent = `"${q.clue}"`;
             clueCitation.textContent = q.citation;
             
@@ -1115,6 +1119,48 @@
             
             // Redraw markers to clear transient ones but keep discovered ones
             redrawMarkers();
+            
+            // Pan to current city region
+            panToCityRegion(q.targetCityKey);
+        }
+
+        // Pan the map viewport to the general region of the city to help center the user's focus
+        function panToCityRegion(cityKey) {
+            if (!map) return;
+            
+            const regions = {
+                JERUSALEM: { center: [-667, 1134], zoom: 0.5 },
+                JOPPA: { center: [-649, 1122], zoom: 0.5 },
+                CAESAREA: { center: [-642, 1194], zoom: 0.5 },
+                DAMASCUS: { center: [-592, 1233], zoom: 0.5 },
+                ANTIOCH_SYRIAN: { center: [-447, 1232], zoom: 0.5 },
+                CYPRUS: { center: [-520, 1033], zoom: 0.5 },
+                SALAMIS: { center: [-527, 1053], zoom: 0.5 },
+                PAPHOS: { center: [-533, 957], zoom: 0.5 },
+                TYRE: { center: [-614, 1161], zoom: 0.5 },
+                
+                EPHESUS: { center: [-366, 740], zoom: 0.5 },
+                TROAS: { center: [-262, 730], zoom: 0.5 },
+                LYSTRA: { center: [-378, 981], zoom: 0.5 },
+                ICONIUM: { center: [-370, 1028], zoom: 0.5 },
+                DERBE: { center: [-356, 1056], zoom: 0.5 },
+                PERGA: { center: [-426, 942], zoom: 0.5 },
+                ANTIOCH_PISIDIAN: { center: [-292, 880], zoom: 0.5 },
+                
+                PHILIPPI: { center: [-144, 626], zoom: 0.5 },
+                THESSALONICA: { center: [-196, 572], zoom: 0.5 },
+                BEROEA: { center: [-196, 544], zoom: 0.5 },
+                ATHENS: { center: [-327, 572], zoom: 0.5 },
+                CORINTH: { center: [-332, 524], zoom: 0.5 },
+                
+                ROME: { center: [-147, 114], zoom: 0.5 },
+                MALTA: { center: [-475, 185], zoom: 0.5 }
+            };
+            
+            const reg = regions[cityKey];
+            if (reg) {
+                map.setView(reg.center, reg.zoom, { animate: true });
+            }
         }
 
         // Render progress indicators dynamically
