@@ -187,7 +187,7 @@
         }
 
         /* Glowing City Hotspot Markers inside Leaflet */
-        .correct-marker-container, .hint-marker-container, .click-pulse-container {
+        .correct-marker-container, .hint-marker-container, .click-pulse-container, .explore-marker-container {
             background: none !important;
             border: none !important;
         }
@@ -223,6 +223,20 @@
             border: 2px dashed #b8860b;
             background-color: rgba(218, 165, 32, 0.18);
             animation: pulse-hint-marker 1.5s infinite;
+        }
+
+        /* Explore Mode pulsing golden markers */
+        .city-marker.explore-glow {
+            border: 2px solid #b8860b;
+            background-color: rgba(218, 165, 32, 0.3);
+            box-shadow: 0 0 10px #daa520;
+            animation: pulse-explore-marker 2s infinite;
+        }
+
+        @keyframes pulse-explore-marker {
+            0% { box-shadow: 0 0 0 0 rgba(218, 165, 32, 0.6); }
+            70% { box-shadow: 0 0 0 6px rgba(218, 165, 32, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(218, 165, 32, 0); }
         }
 
         /* Dynamic click effect circle */
@@ -633,6 +647,13 @@
         .audio-control:hover {
             background: rgba(214, 193, 154, 0.22);
         }
+        .audio-control.active {
+            border-color: #8e7249;
+            background-color: #f4eedb;
+            color: #4a3319;
+            box-shadow: inset 0 0 5px rgba(142, 114, 73, 0.2);
+            font-weight: 700;
+        }
         .audio-icon {
             font-size: 1rem;
         }
@@ -654,14 +675,19 @@
                 <h1>Journeys of the Apostle Paul</h1>
                 <div class="subtitle">Educational Scriptural Map Game</div>
             </div>
-            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                <div id="mode-toggle" class="audio-control" title="Toggle between chronological and randomized stop order">
-                    <span id="mode-icon">📜</span>
-                    <span id="mode-text">Chronological</span>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                <div id="btn-mode-chrono" class="audio-control active" title="Chronological stop order">
+                    <span>📜</span> <span>Chrono</span>
+                </div>
+                <div id="btn-mode-random" class="audio-control" title="Randomized stop order">
+                    <span>🔀</span> <span>Random</span>
+                </div>
+                <div id="btn-mode-explore" class="audio-control" title="Interactive Atlas Explore Mode">
+                    <span>🧭</span> <span>Explore Atlas</span>
                 </div>
                 <div id="audio-toggle" class="audio-control" title="Toggle sound effects">
                     <span id="audio-icon" class="audio-icon">🔊</span>
-                    <span>Sound Chimes</span>
+                    <span>Chimes</span>
                 </div>
             </div>
         </header>
@@ -867,6 +893,147 @@
             CYPRUS: { x: 1033, y: 520, name: 'Cyprus (Island)' }
         };
 
+        const EXPLORE_DATA = {
+            JERUSALEM: {
+                lesson: "Lessons 94, 95, 96, 98, 101",
+                title: "Pentecost, Healing Lame Man, Peter's Freedom, and Paul's Arrest",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014694",
+                significance: "Where the Christian congregation was formed on Pentecost 33 C.E. as the disciples received holy spirit. Later, Peter and John healed a lame man at the temple gate. It was the site of multiple congregations, Paul's regular visits, and his final arrest."
+            },
+            DAMASCUS: {
+                lesson: "Lesson 96",
+                title: "Saul Preaches in Damascus",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014696",
+                significance: "Saul was traveling here to persecute Christians when Jesus appeared to him in a blinding light. He was baptized, recovered his sight, and began preaching boldly in the synagogues for three years."
+            },
+            JOPPA: {
+                lesson: "Lesson 97",
+                title: "Cornelius Receives Holy Spirit",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014697",
+                significance: "Peter stayed here at Simon the tanner's house by the sea. He resurrected Tabitha (Dorcas) and received a vision showing clean and unclean animals, preparing him to preach to non-Jews."
+            },
+            CAESAREA: {
+                lesson: "Lessons 97 & 101",
+                title: "Cornelius' Baptism and Paul's Imprisonment",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014697",
+                significance: "Home of Cornelius, the Roman army officer who became the first uncircumcised Gentile Christian. Later, Paul was held under guard in Herod's palace here for two years, testifying before Governors Felix, Festus, and King Agrippa."
+            },
+            ANTIOCH_SYRIAN: {
+                lesson: "Lesson 99",
+                title: "First Missionary Journey Commences",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "A major hub where Barnabas and Saul taught a great crowd, and where the disciples were first called 'Christians' by divine providence. It was the launching pad and return point for Paul's first and second journeys."
+            },
+            CYPRUS: {
+                lesson: "Lesson 99",
+                title: "Preaching Throughout Cyprus",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "The home island of Barnabas. Barnabas, John Mark, and Saul sailed here at the start of their first missionary tour, declaring God's word across the island."
+            },
+            SALAMIS: {
+                lesson: "Lesson 99",
+                title: "Proclaiming the Word in Cyprus",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "A bustling seaport on the east coast of Cyprus. Barnabas and Saul arrived here from Seleucia and declared the word of God in the local synagogues."
+            },
+            PAPHOS: {
+                lesson: "Lesson 99",
+                title: "Confronting Elymas the Sorcerer",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "Where the proconsul Sergius Paulus wanted to hear God's word. When the sorcerer Elymas opposed them, Paul temporarily blinded him by holy spirit, causing the proconsul to believe."
+            },
+            ANTIOCH_PISIDIAN: {
+                lesson: "Lesson 99",
+                title: "Paul's Sermon in Pisidia",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "Paul delivered a detailed scriptural talk in the synagogue here, tracing God's promise to David. Many believed, but jealous opponents later stirred up persecution and expelled them."
+            },
+            ICONIUM: {
+                lesson: "Lesson 99",
+                title: "Preaching Boldly Amid Plots",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "Paul and Barnabas spent a long time here speaking with boldness, and a great multitude became believers. They fled to Lystra and Derbe after learning of a plot to stone them."
+            },
+            LYSTRA: {
+                lesson: "Lesson 99",
+                title: "Healing a Lame Man and Stoning",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "Paul healed a man lame from birth. The crowds mistakenly tried to worship Paul and Barnabas as Greek gods. Later, opponents from Antioch and Iconium stoned Paul, but he survived."
+            },
+            DERBE: {
+                lesson: "Lesson 99",
+                title: "Preaching in Derbe",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "After escaping Lystra, Paul and Barnabas declared the good news here and made quite a few disciples. They then retraced their steps to strengthen and organize the new congregations."
+            },
+            PERGA: {
+                lesson: "Lesson 99",
+                title: "John Mark Departs",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014699",
+                significance: "A city in Pamphylia. Here, John Mark left Paul and Barnabas to return to Jerusalem, a decision that later caused a sharp disagreement between the two missionaries."
+            },
+            PHILIPPI: {
+                lesson: "Lesson 100",
+                title: "Establishment of the Congregation in Europe",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "A leading city of Macedonia. Here, Lydia was baptized. Later, Paul and Silas were flogged and jailed. An earthquake opened the doors, leading to the baptism of the jailer and his family."
+            },
+            THESSALONICA: {
+                lesson: "Lesson 100",
+                title: "Jason's House Attacked",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "Paul reasoned in the synagogue here for three Sabbaths. A congregation was formed, but jealous opponents dragged Jason and others to the city rulers, accusing them of subverting Caesar."
+            },
+            BEROEA: {
+                lesson: "Lesson 100",
+                title: "Noble-Minded Scripture Examiners",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "The Jewish community here was praised for being noble-minded. They accepted the word with eagerness and carefully examined the Scriptures daily to verify Paul's teachings."
+            },
+            ATHENS: {
+                lesson: "Lesson 100",
+                title: "Sermon on the Areopagus",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "Paul observed Athens was full of idols. In his famous speech on Mars' Hill, he taught the Epicurean and Stoic philosophers about the Creator God and the resurrection of Christ."
+            },
+            CORINTH: {
+                lesson: "Lesson 100",
+                title: "Working as a Tentmaker",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "Paul lived here for 18 months, working as a tentmaker with Aquila and Priscilla. He received encouragement in a vision from Jesus: 'Do not be afraid, for I have many people in this city.'"
+            },
+            EPHESUS: {
+                lesson: "Lesson 100",
+                title: "The Riot in the Theater",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "Paul spent over two years here teaching. Many magic practitioners burned their books. Demetrius the silversmith stirred up a massive riot in the grand theater because his shrine-making business was losing money."
+            },
+            TROAS: {
+                lesson: "Lesson 100",
+                title: "Macedonian Vision and Eutychus' Resurrection",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014700",
+                significance: "Where Paul saw the vision of a Macedonian begging: 'Step over into Macedonia and help us.' Later, the young man Eutychus fell asleep during Paul's talk, fell from a third-story window, and was resurrected."
+            },
+            MALTA: {
+                lesson: "Lesson 101",
+                title: "Shipwreck and Safe Landing",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014701",
+                significance: "After a 14-day storm, the ship carrying Paul was wrecked on the reefs of Malta. All 276 on board survived. Paul stayed for three months, surviving a viper bite and healing many islanders."
+            },
+            ROME: {
+                lesson: "Lesson 101",
+                title: "House Arrest and Preaching",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014701",
+                significance: "Paul lived under house arrest for two years, chained to a Roman soldier. He welcomed all visitors, preaching the kingdom of God with boldness, and wrote several inspired letters."
+            },
+            TYRE: {
+                lesson: "Lesson 101",
+                title: "Warning Not to Go to Jerusalem",
+                url: "https://wol.jw.org/en/wol/d/r1/lp-e/1102014701",
+                significance: "A major Phoenician port. Paul stayed here for seven days. The disciples, warned through holy spirit, urged Paul not to enter Jerusalem. When they departed, they all knelt on the beach and prayed."
+            }
+        };
+
         const QUESTIONS = [
             {
                 id: 1,
@@ -997,11 +1164,12 @@
         let discoveredCities = []; // Array of keys of correctly answered cities
         let randomModeActive = false; // Toggle for randomizing question order
         let activeQuestions = [...QUESTIONS];
+        let originalGameCardHTML = "";
 
         // Original image design dimensions
         const ORIGINAL_WIDTH = 1408;
         const ORIGINAL_HEIGHT = 768;
-        const CLICK_THRESHOLD = 26; // Radius in pixels at which a click registers on a city
+        const CLICK_THRESHOLD = 26; // Radius in pixels at which a city is clicked
 
         // Leaflet references
         let map;
@@ -1010,20 +1178,22 @@
 
         // --- 4. DOM Elements ---
         const flashOverlay = document.getElementById('flash-overlay');
-        const currentQuestionNum = document.getElementById('current-question-num');
-        const scoreDisplay = document.getElementById('score-display');
-        const clueText = document.getElementById('clue-text');
-        const clueCitation = document.getElementById('clue-citation');
-        const feedbackBox = document.getElementById('feedback-box');
-        const factBox = document.getElementById('fact-box');
-        const factText = document.getElementById('fact-text');
+        let currentQuestionNum = document.getElementById('current-question-num');
+        let scoreDisplay = document.getElementById('score-display');
+        let clueText = document.getElementById('clue-text');
+        let clueCitation = document.getElementById('clue-citation');
+        let feedbackBox = document.getElementById('feedback-box');
+        let factBox = document.getElementById('fact-box');
+        let factText = document.getElementById('fact-text');
         
-        const btnNext = document.getElementById('btn-next');
-        const btnHint = document.getElementById('btn-hint');
+        let btnNext = document.getElementById('btn-next');
+        let btnHint = document.getElementById('btn-hint');
         const btnRestart = document.getElementById('btn-restart');
-        const modeToggle = document.getElementById('mode-toggle');
-        const modeIcon = document.getElementById('mode-icon');
-        const modeText = document.getElementById('mode-text');
+        
+        const btnChrono = document.getElementById('btn-mode-chrono');
+        const btnRandom = document.getElementById('btn-mode-random');
+        const btnExplore = document.getElementById('btn-mode-explore');
+        const audioToggle = document.getElementById('audio-toggle');
         
         const gameActiveCard = document.getElementById('game-active-card');
         const gameCompleteCard = document.getElementById('game-complete-card');
@@ -1254,9 +1424,6 @@
 
         // Handle Map Click Event
         function handleMapClick(e) {
-            // Do not process map clicks if question is already answered
-            if (questionAnswered) return;
-            
             getAudioContext();
 
             // Direct pixel coordinates from simple CRS
@@ -1267,6 +1434,18 @@
             if (clickX < 0 || clickX > ORIGINAL_WIDTH || clickY < 0 || clickY > ORIGINAL_HEIGHT) {
                 return;
             }
+            
+            // If explore mode is active, handle selecting/panning to target city
+            if (exploreModeActive) {
+                const clickedCityKey = findNearestCity(clickX, clickY);
+                if (clickedCityKey) {
+                    selectExploreCity(clickedCityKey);
+                }
+                return;
+            }
+
+            // Do not process map clicks if question is already answered
+            if (questionAnswered) return;
             
             const clickedCityKey = findNearestCity(clickX, clickY);
             const currentQ = activeQuestions[currentQuestionIndex];
@@ -1373,22 +1552,159 @@
             completionSummary.textContent = summaryMsg;
         }
 
-        // Toggle random/chronological modes
-        modeToggle.addEventListener('click', () => {
-            getAudioContext();
-            randomModeActive = !randomModeActive;
+        // --- 5.1 Explore Mode Functions ---
+        
+        function initExploreMode() {
+            gameCompleteCard.style.display = 'none';
+            gameActiveCard.style.display = 'block';
             
-            if (randomModeActive) {
-                modeIcon.textContent = '🔀';
-                modeText.textContent = 'Randomized';
-                modeToggle.title = 'Switch to chronological stop order';
-            } else {
-                modeIcon.textContent = '📜';
-                modeText.textContent = 'Chronological';
-                modeToggle.title = 'Switch to randomized stop order';
+            if (markerGroup) {
+                markerGroup.clearLayers();
             }
             
-            initGame();
+            Object.keys(CITIES).forEach(cityKey => {
+                const city = CITIES[cityKey];
+                createExploreMarker(city.x, city.y, city.name, cityKey);
+            });
+            
+            renderExploreCardPlaceholder();
+            
+            if (map) {
+                map.setView([-450, 700], -0.25, { animate: true });
+            }
+        }
+
+        function createExploreMarker(x, y, label, cityKey) {
+            const icon = L.divIcon({
+                className: 'explore-marker-container',
+                html: '<div class="city-marker explore-glow"></div>',
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+            
+            const marker = L.marker([-y, x], { icon: icon }).addTo(markerGroup);
+            marker.bindTooltip(label, { permanent: false, direction: 'top', className: 'marker-tooltip' });
+            
+            marker.on('click', () => {
+                selectExploreCity(cityKey);
+            });
+        }
+
+        function selectExploreCity(cityKey) {
+            getAudioContext();
+            playSynthesizedChime(true);
+            
+            const data = EXPLORE_DATA[cityKey];
+            const city = CITIES[cityKey];
+            if (!data || !city) return;
+            
+            map.setView([-city.y, city.x], 0.5, { animate: true });
+            
+            const contentDiv = document.querySelector('.bottom-card-content');
+            if (contentDiv) {
+                contentDiv.innerHTML = `
+                    <div class="bottom-left-panel">
+                        <div class="clue-box" style="border-left-color: #8e7249;">
+                            <div class="clue-header">Atlas Explorer: ${city.name}</div>
+                            <div class="clue-text" style="font-size: 0.9rem; line-height: 1.35; max-height: 110px; overflow-y: auto;">
+                                ${data.significance}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-right-panel" style="gap: 5px;">
+                        <div class="top-row-status" style="border-bottom: none; padding-bottom: 0;">
+                            <div class="status-item">
+                                <span class="status-title">Lesson:</span>
+                                <span class="status-value" style="font-size: 0.8rem;">${data.lesson}</span>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.8rem; font-weight: bold; color: #4a3319; text-align: center; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            "${data.title}"
+                        </div>
+                        <a href="${data.url}" target="_blank" rel="noopener" class="btn" style="text-decoration: none; padding: 6px 12px; font-size: 0.8rem; height: auto; min-height: 0;">
+                            📖 Read Lesson on JW.org ➜
+                        </a>
+                    </div>
+                `;
+            }
+        }
+
+        function renderExploreCardPlaceholder() {
+            const card = document.getElementById('game-active-card');
+            card.innerHTML = `
+                <div class="bottom-card-content" style="grid-template-columns: 1fr; text-align: center;">
+                    <div class="bottom-left-panel">
+                        <div style="font-family: 'Cinzel', serif; font-size: 1rem; font-weight: 700; color: #8e7249; margin-bottom: 4px;">
+                            🧭 Interactive Atlas Explorer Mode
+                        </div>
+                        <div class="clue-text" style="font-size: 0.9rem; line-height: 1.4;">
+                            Explore the world of the first-century Christians! Click any location pin on the map to learn about its history, scriptural significance, and open direct lesson links in <em>Lessons You Can Learn From the Bible</em>.
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function rebindDOMElements() {
+            clueText = document.getElementById('clue-text');
+            clueCitation = document.getElementById('clue-citation');
+            feedbackBox = document.getElementById('feedback-box');
+            factBox = document.getElementById('fact-box');
+            factText = document.getElementById('fact-text');
+            
+            btnNext = document.getElementById('btn-next');
+            btnHint = document.getElementById('btn-hint');
+            
+            btnNext.addEventListener('click', proceedToNextQuestion);
+            btnHint.addEventListener('click', showHint);
+        }
+
+        function restoreGameCardUI() {
+            if (originalGameCardHTML) {
+                gameActiveCard.innerHTML = originalGameCardHTML;
+                rebindDOMElements();
+            }
+        }
+
+        let exploreModeActive = false;
+        
+        function switchMode(mode) {
+            btnChrono.classList.remove('active');
+            btnRandom.classList.remove('active');
+            btnExplore.classList.remove('active');
+            
+            if (mode === 'chrono') {
+                btnChrono.classList.add('active');
+                randomModeActive = false;
+                exploreModeActive = false;
+                restoreGameCardUI();
+                initGame();
+            } else if (mode === 'random') {
+                btnRandom.classList.add('active');
+                randomModeActive = true;
+                exploreModeActive = false;
+                restoreGameCardUI();
+                initGame();
+            } else if (mode === 'explore') {
+                btnExplore.classList.add('active');
+                exploreModeActive = true;
+                initExploreMode();
+            }
+        }
+
+        btnChrono.addEventListener('click', () => {
+            getAudioContext();
+            switchMode('chrono');
+        });
+        
+        btnRandom.addEventListener('click', () => {
+            getAudioContext();
+            switchMode('random');
+        });
+        
+        btnExplore.addEventListener('click', () => {
+            getAudioContext();
+            switchMode('explore');
         });
 
         // --- 6. Event Listeners ---
@@ -1398,6 +1714,7 @@
 
         // Start game and map on load
         window.addEventListener('load', () => {
+            originalGameCardHTML = gameActiveCard.innerHTML;
             initMap();
             initGame();
         });
