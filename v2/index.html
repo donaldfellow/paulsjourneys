@@ -242,11 +242,19 @@
         }
 
         /* Glowing City Hotspot Markers inside Leaflet */
+        .correct-marker-container, .hint-marker-container, .click-pulse-container {
+            background: none !important;
+            border: none !important;
+        }
+
         .city-marker {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            box-sizing: border-box;
         }
 
         .city-marker.correct-glow {
@@ -274,9 +282,12 @@
 
         /* Dynamic click effect circle */
         .click-pulse {
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             pointer-events: none;
             opacity: 1;
+            box-sizing: border-box;
         }
 
         .click-pulse.success {
@@ -316,7 +327,7 @@
 
         @keyframes pulse-hint-marker {
             0% { transform: scale(0.95); opacity: 0.6; }
-            50% { transform: scale(1.15); opacity: 1; }
+            50% { transform: scale(1.35); opacity: 1; }
             100% { transform: scale(0.95); opacity: 0.6; }
         }
 
@@ -1171,7 +1182,8 @@
         // Create a green permanent marker on the map using Leaflet
         function createPermanentMarker(x, y, label) {
             const icon = L.divIcon({
-                className: 'city-marker correct-glow',
+                className: 'correct-marker-container',
+                html: '<div class="city-marker correct-glow"></div>',
                 iconSize: [28, 28],
                 iconAnchor: [14, 14]
             });
@@ -1191,7 +1203,8 @@
         // Dynamic click indicator (burst pulse circle) at coordinate
         function triggerClickIndicator(x, y, isCorrect) {
             const icon = L.divIcon({
-                className: `click-pulse ${isCorrect ? 'success' : 'failure'}`,
+                className: 'click-pulse-container',
+                html: `<div class="click-pulse ${isCorrect ? 'success' : 'failure'}"></div>`,
                 iconSize: [44, 44],
                 iconAnchor: [22, 22]
             });
@@ -1288,7 +1301,7 @@
             getAudioContext();
             
             // Remove any existing hints
-            const existingHints = document.querySelectorAll('.city-marker.target-hint');
+            const existingHints = document.querySelectorAll('.hint-marker-container');
             existingHints.forEach(h => h.remove());
             
             const q = activeQuestions[currentQuestionIndex];
@@ -1296,9 +1309,10 @@
             
             if (targetCity) {
                 const icon = L.divIcon({
-                    className: 'city-marker target-hint',
-                    iconSize: [28, 28],
-                    iconAnchor: [14, 14]
+                    className: 'hint-marker-container',
+                    html: '<div class="city-marker target-hint"></div>',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
                 });
                 const hintMarker = L.marker([-targetCity.y, targetCity.x], { icon: icon }).addTo(map);
                 
